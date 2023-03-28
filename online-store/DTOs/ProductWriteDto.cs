@@ -12,7 +12,7 @@
 
         public int? CategoryId { get; set; }
 
-        public string? ImageUrl { get; set; }
+        public string? MainImageUrl { get; set; }
 
         public string? ProductName { get; set; }
 

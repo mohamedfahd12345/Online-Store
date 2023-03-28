@@ -15,7 +15,7 @@ public partial class Product
 
     public int? CategoryId { get; set; }
 
-    public string? ImageUrl { get; set; }
+    public string? MainImageUrl { get; set; }
 
     public string? ProductName { get; set; }
 
@@ -24,6 +24,10 @@ public partial class Product
     public virtual ICollection<Cart> Carts { get; } = new List<Cart>();
 
     public virtual Category? Category { get; set; }
+
+    public virtual ICollection<Image> Images { get; } = new List<Image>();
+
+    public virtual ICollection<OrderProduct> OrderProducts { get; } = new List<OrderProduct>();
 
     public virtual User? Vendor { get; set; }
 }

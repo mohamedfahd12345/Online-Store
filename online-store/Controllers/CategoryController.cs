@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using online_store.Repositories.UnitOfWork;
+using online_store.Repositories.category;
 
 namespace online_store.Controllers
 {
@@ -10,11 +10,11 @@ namespace online_store.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IUnitOfWork _UnitOfWork;
+        private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
-        public CategoryController(IUnitOfWork UnitOfWork , IMapper mapper)
+        public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
         {
-            _UnitOfWork = UnitOfWork;
+            this.categoryRepository = categoryRepository;
             this.mapper = mapper;
             
         }
@@ -22,7 +22,7 @@ namespace online_store.Controllers
         [HttpGet, Route("/categories")]
         public async Task<IActionResult> GetCategories()
         {
-            return Ok(mapper.Map<List<CategoryReadDTO>>(await _UnitOfWork.categoryRepository.GetAllCategory())) ;
+            return Ok(mapper.Map<List<CategoryReadDTO>>(await categoryRepository.GetAllCategory())) ;
         }
 
 
@@ -36,7 +36,7 @@ namespace online_store.Controllers
 
             var VerifyOfRequest = new VerifyOfRequest();
 
-            VerifyOfRequest =await _UnitOfWork.categoryRepository.CreateCategory( mapper.Map<Category>(categoryDTO) );
+            VerifyOfRequest =await categoryRepository.CreateCategory( mapper.Map<Category>(categoryDTO) );
 
             if (VerifyOfRequest.Errorexisting == false)
             {
@@ -49,14 +49,14 @@ namespace online_store.Controllers
         [HttpDelete, Route("/categories/{categoryId}")]
         public async Task<IActionResult> DeleteCategories(int categoryId)
         {
-            if (await _UnitOfWork.categoryRepository.IsCategoryExist(categoryId) == false)
+            if (await categoryRepository.IsCategoryExist(categoryId) == false)
             {
                 return NotFound("can't found the Category to delete it");
             }
 
             var VerifyOfRequest = new VerifyOfRequest();
 
-            VerifyOfRequest = await _UnitOfWork.categoryRepository.DeleteCategory(categoryId);
+            VerifyOfRequest = await categoryRepository.DeleteCategory(categoryId);
 
             if(VerifyOfRequest.Errorexisting == false)
             {
@@ -76,13 +76,13 @@ namespace online_store.Controllers
                 return BadRequest($"id in object doesn't match with id in Parameters");
             }
 
-            if (await _UnitOfWork.categoryRepository.IsCategoryExist(categoryId) == false)
+            if (await categoryRepository.IsCategoryExist(categoryId) == false)
             {
                 return NotFound($"can't found Category with id {categoryId} ");
             }
 
             
-            bool result= await _UnitOfWork.categoryRepository.UpdateCategory(mapper.Map<Category>(updatedCategory));
+            bool result= await categoryRepository.UpdateCategory(mapper.Map<Category>(updatedCategory));
             if(result == true)
             {
                 return Ok("Category Updated Successfully");
@@ -94,7 +94,7 @@ namespace online_store.Controllers
         [HttpGet, Route("/categories/{categoryId}")]
         public async Task<IActionResult> GetCategoryByID(int categoryId) 
         {
-            var category =await _UnitOfWork.categoryRepository.GetById(categoryId);
+            var category =await categoryRepository.GetById(categoryId);
             if ( category is null)
             {
                  return NotFound($"can't found Category with id {categoryId} ");
@@ -107,7 +107,7 @@ namespace online_store.Controllers
         [HttpGet, Route("/count-catergorys")]
         public async Task<IActionResult> GetCountOfCategories()
         {
-            return Ok(await _UnitOfWork.categoryRepository.GetCountOfCategories());
+            return Ok(await categoryRepository.GetCountOfCategories());
         }
     }
 }

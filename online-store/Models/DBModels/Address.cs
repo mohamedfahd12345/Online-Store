@@ -9,13 +9,11 @@ public partial class Address
 
     public string? StreetNumber { get; set; }
 
-    public string? AddressLine { get; set; }
+    public string? StreetAddress { get; set; }
 
     public string? City { get; set; }
 
-    public string? PostalCode { get; set; }
-
-    public string? Country { get; set; }
+    public string? ZipCode { get; set; }
 
     public string? HomeNumber { get; set; }
 

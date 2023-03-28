@@ -21,13 +21,15 @@ public partial class OnlineStoreContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<Country> Countries { get; set; }
+    public virtual DbSet<Image> Images { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderProduct> OrderProducts { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -41,22 +43,19 @@ public partial class OnlineStoreContext : DbContext
         {
             entity.ToTable("Address");
 
-            entity.Property(e => e.AddressLine)
-                .HasMaxLength(200)
-                .HasColumnName("address_line");
             entity.Property(e => e.City)
                 .HasMaxLength(150)
                 .HasColumnName("city");
-            entity.Property(e => e.Country)
-                .HasMaxLength(150)
-                .HasColumnName("country");
             entity.Property(e => e.HomeNumber).HasColumnName("Home_Number");
-            entity.Property(e => e.PostalCode)
-                .HasMaxLength(50)
-                .HasColumnName("postal_code");
+            entity.Property(e => e.StreetAddress)
+                .HasMaxLength(200)
+                .HasColumnName("street_address");
             entity.Property(e => e.StreetNumber)
                 .HasMaxLength(50)
                 .HasColumnName("Street_number");
+            entity.Property(e => e.ZipCode)
+                .HasMaxLength(50)
+                .HasColumnName("zip_code");
         });
 
         modelBuilder.Entity<Cart>(entity =>
@@ -67,7 +66,8 @@ public partial class OnlineStoreContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK_Cart_Product");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Cart_Product2");
 
             entity.HasOne(d => d.ProductNavigation).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.ProductId)
@@ -82,14 +82,14 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.CategoryName).HasMaxLength(150);
         });
 
-        modelBuilder.Entity<Country>(entity =>
+        modelBuilder.Entity<Image>(entity =>
         {
-            entity.ToTable("Country");
+            entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.CountryId).HasColumnName("country_id");
-            entity.Property(e => e.CountryName)
-                .HasMaxLength(150)
-                .HasColumnName("country_name");
+            entity.HasOne(d => d.Product).WithMany(p => p.Images)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Images_Product");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -97,22 +97,18 @@ public partial class OnlineStoreContext : DbContext
             entity.ToTable("Order");
 
             entity.Property(e => e.AdderssId).HasColumnName("Adderss_ID");
-            entity.Property(e => e.CreatedDate)
-                .HasColumnType("date")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.DeliveryCost)
-                .HasColumnType("numeric(18, 5)")
+                .HasColumnType("decimal(10, 2)")
                 .HasColumnName("delivery_cost");
             entity.Property(e => e.OrderStatus)
                 .HasMaxLength(50)
                 .HasColumnName("Order_Status");
             entity.Property(e => e.PaymentMethod).HasMaxLength(150);
-            entity.Property(e => e.ShippedDate)
-                .HasColumnType("date")
-                .HasColumnName("shipped_date");
-            entity.Property(e => e.TotatlPrice).HasColumnType("numeric(18, 5)");
+            entity.Property(e => e.ShippedDate).HasColumnName("shipped_date");
+            entity.Property(e => e.TotatlPrice).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.TotatlPriceForProducts)
-                .HasColumnType("numeric(18, 5)")
+                .HasColumnType("decimal(10, 2)")
                 .HasColumnName("TotatlPrice_for_products");
 
             entity.HasOne(d => d.Adderss).WithMany(p => p.Orders)
@@ -121,6 +117,7 @@ public partial class OnlineStoreContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Order_User");
         });
 
@@ -139,6 +136,11 @@ public partial class OnlineStoreContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.OrderProducts)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK_OrderProduct_Order");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderProducts)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_OrderProduct_Product");
         });
 
         modelBuilder.Entity<Product>(entity =>
@@ -147,17 +149,39 @@ public partial class OnlineStoreContext : DbContext
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.Price).HasColumnType("numeric(18, 5)");
+            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.ProductName).HasMaxLength(150);
             entity.Property(e => e.VendorId).HasColumnName("VendorID");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Product_Category");
 
             entity.HasOne(d => d.Vendor).WithMany(p => p.Products)
                 .HasForeignKey(d => d.VendorId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Product_User");
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.ToTable("Refresh Token");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccessToken).HasColumnName("Access_Token");
+            entity.Property(e => e.CreationDate).HasColumnName("Creation_Date");
+            entity.Property(e => e.ExpirationDate).HasColumnName("Expiration_date");
+            entity.Property(e => e.IsExpired).HasColumnName("Is_Expired");
+            entity.Property(e => e.IsRevoked).HasColumnName("Is_Revoked");
+            entity.Property(e => e.IsUsed).HasColumnName("Is_Used");
+            entity.Property(e => e.RefreshToken1).HasColumnName("Refresh_Token");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Refresh Token_User");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -165,18 +189,15 @@ public partial class OnlineStoreContext : DbContext
             entity.ToTable("User");
 
             entity.Property(e => e.Email).HasMaxLength(100);
-            entity.Property(e => e.PasswordHash)
-                .HasMaxLength(64)
-                .IsFixedLength();
-            entity.Property(e => e.PasswordSalt)
-                .HasMaxLength(128)
-                .IsFixedLength();
+            entity.Property(e => e.PasswordHash).HasMaxLength(64);
+            entity.Property(e => e.PasswordSalt).HasMaxLength(128);
             entity.Property(e => e.PhoneNumber).HasMaxLength(50);
             entity.Property(e => e.Role).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(200);
 
             entity.HasOne(d => d.Address).WithMany(p => p.Users)
                 .HasForeignKey(d => d.AddressId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_User_Address");
         });
 

@@ -1,36 +1,38 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using online_store.Authentication_Service;
 using online_store.Authentication_Services;
 using online_store.Repositories.Auth;
-using online_store.Repositories.UnitOfWork;
-
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using online_store.Helper;
+
 namespace online_store.Controllers
 {
     
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUnitOfWork  _UnitOfWork;
-        private readonly IConfiguration _configuration;
-        public AuthController(IUnitOfWork  UnitOfWork , IConfiguration configuration )
+        private readonly IAuthRepository authRepository;
+        private readonly TokenServices TokenServices;
+        private readonly HashServices hashServices;
+        public AuthController(IAuthRepository authRepository , TokenServices tokenServices 
+            , HashServices hashServices)
         {
-            _UnitOfWork =  UnitOfWork;
-            _configuration = configuration;
+            this.TokenServices = tokenServices;
+            this.authRepository = authRepository;
+            this.hashServices = hashServices;
         }
 
         [HttpPost , Route("/customer/register")]
         public async Task<IActionResult> Register([FromBody]CustomerDTO customerDTO)
         {
-            if (customerDTO == null) { return BadRequest(); }
 
-            if (!ModelState.IsValid) { return BadRequest(); }
 
-            var result =  await _UnitOfWork.authRepository.Register(customerDTO);
+            if (!ModelState.IsValid) { return BadRequest(new { error = "Ivaild Input" }); }
+
+            var result =  await authRepository.Register(customerDTO);
 
             if (result.Errorexisting) { return BadRequest(result.ErrorDetails); }
            
@@ -41,29 +43,25 @@ namespace online_store.Controllers
         [HttpPost , Route("/login")]
         public async Task<IActionResult> Login([FromBody] CustomerLoginDTO customerLoginDTO)
         {
-            if (customerLoginDTO == null) { return BadRequest(); }
+           
 
-            if (!ModelState.IsValid) { return BadRequest(); }
+            if (!ModelState.IsValid) { return BadRequest(new {error = "Ivaild Input"}); }
 
 
-            var user = new User();
-            user = await _UnitOfWork.authRepository.GetUser(customerLoginDTO.Email);
+            var user = await authRepository.GetUser(customerLoginDTO.Email);
 
-            if (user is null || !HashServices.VerifyPasswordHash(customerLoginDTO.Password, user.PasswordHash, user.PasswordSalt))
+            if (user is null  )
             {
-                return BadRequest("Invalid Email or Password ");
+                return BadRequest(new { error = "Invalid Email or Password" });
+            }
+            if(!hashServices.VerifyPasswordHash(customerLoginDTO.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return BadRequest(new { error = "Invalid Email or Password" });
             }
 
-         
-            try
-            {
-                var TokenServices = new TokenServices(_configuration);
-
-                string token = TokenServices.CreateToken(user);
-                return Ok(token);
-            }
-            catch(Exception ex)
-            { return BadRequest(ex.Message); }
+           
+            var token =await TokenServices.CreateToken(user);
+            return Ok(token);
             
         }
 
@@ -71,11 +69,11 @@ namespace online_store.Controllers
         [HttpPost, Route("/admin/register")]
         public async Task<IActionResult> AdminRegister([FromBody] CustomerDTO customerDTO)
         {
-            if (customerDTO == null) { return BadRequest(); }
 
-            if (!ModelState.IsValid) { return BadRequest(); }
 
-            var result = await _UnitOfWork.authRepository.Register(customerDTO,"admin");
+            if (!ModelState.IsValid) { return BadRequest(new { error = "Ivaild Input" }); }
+
+            var result = await authRepository.Register(customerDTO,"admin");
 
             if (result.Errorexisting) { return BadRequest(result.ErrorDetails); }
 
@@ -85,16 +83,42 @@ namespace online_store.Controllers
         [HttpPost, Route("/vendor/register")]
         public async Task<IActionResult> VendorRegister([FromBody] CustomerDTO customerDTO)
         {
-            if (customerDTO == null) { return BadRequest(); }
 
-            if (!ModelState.IsValid) { return BadRequest(); }
 
-            var result = await _UnitOfWork.authRepository.Register(customerDTO , "vendor");
+            if (!ModelState.IsValid) { return BadRequest(new { error = "Ivaild Input" }); }
+
+            var result = await authRepository.Register(customerDTO , "vendor");
 
             if (result.Errorexisting) { return BadRequest(result.ErrorDetails); }
 
             return Ok();
         }
 
+        [HttpPost("/refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RequestToken requestToken)
+        {
+            if (!ModelState.IsValid) { return BadRequest(new { error = "Ivaild Input" }); }
+            var token = await TokenServices.RefreshToken(requestToken);
+            if(token is null)
+            {
+                return BadRequest(new { error = "Invail Token" });
+            }
+            return Ok(token);
+        }
+
+        [HttpPost("/revoke-token")]
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeToken model)
+        {
+            if (!ModelState.IsValid) { return BadRequest(new { error = "Ivaild Input" }); }
+
+            var result = await TokenServices.RevokeToken(model.Token);
+
+            if(result == false)
+            {
+                return BadRequest(new { error = "Token is invalid!" });
+            }
+
+            return Ok();
+        } 
     }
 }

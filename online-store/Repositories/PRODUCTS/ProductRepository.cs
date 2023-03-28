@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using online_store.DTOs;
+using Microsoft.EntityFrameworkCore;
 namespace online_store.Repositories.PRODUCTS
 {
     public class ProductRepository : IProductRepository
@@ -69,23 +70,22 @@ namespace online_store.Repositories.PRODUCTS
         public async Task<List<ProductReadDto>> GetAllProducts()
         {
             var Product = new List<ProductReadDto>();
-            Product = await (from p in _context.Products
-                             join c in _context.Categories
-                             on p.CategoryId equals c.CategoryId
 
-                             select new ProductReadDto
-                             {
-                                 ProductId = p.ProductId,
-                                 CategoryId = c.CategoryId,
-                                 Category = c.CategoryName,
-                                 Price = p.Price,
-                                 ImageUrl = p.ImageUrl,
-                                 ProductName = p.ProductName,
-                                 Quantity = p.Quantity,
-                                 VendorId = p.VendorId,
-                                 Description = p.Description
-
-                             }).ToListAsync();
+            Product = await _context.Products
+                .Include(x => x.Category)
+                .Select(p => new ProductReadDto
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    VendorId = p.VendorId,
+                    Description = p.Description,
+                    ProductName = p.ProductName,
+                    MainImageUrl = p.MainImageUrl,
+                    Price = p.Price,
+                    Category = p.Category.CategoryName,
+                    CategoryId = p.Category.CategoryId
+                })
+                .ToListAsync();
 
             return Product;
            
@@ -94,25 +94,23 @@ namespace online_store.Repositories.PRODUCTS
         public async Task<ProductReadDto> GetProductById(int productid)
         {
             var Product = new ProductReadDto();
-            Product = await (from p in _context.Products
-                             join c in _context.Categories
-                             on p.CategoryId equals c.CategoryId
 
-                             where p.ProductId == productid
-
-                             select new ProductReadDto
-                             {
-                                 ProductId = p.ProductId,
-                                 CategoryId = c.CategoryId,
-                                 Category = c.CategoryName,
-                                 Price = p.Price,
-                                 ImageUrl = p.ImageUrl,
-                                 ProductName = p.ProductName,
-                                 Quantity = p.Quantity,
-                                 VendorId = p.VendorId,
-                                 Description = p.Description
-
-                             }).FirstOrDefaultAsync();
+             Product = await _context.Products
+                .Where(p=>p.ProductId == productid)
+                .Include(x => x.Category)
+                .Select(p => new ProductReadDto
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    VendorId = p.VendorId,
+                    Description = p.Description,
+                    ProductName = p.ProductName,
+                    MainImageUrl = p.MainImageUrl,
+                    Price = p.Price,
+                    Category = p.Category.CategoryName,
+                    CategoryId = p.Category.CategoryId
+                })
+                .FirstOrDefaultAsync();
 
             return Product;
         }
@@ -122,7 +120,7 @@ namespace online_store.Repositories.PRODUCTS
             if (productsPerPage < 1 || pageNumber < 1)
                 return null;
 
-             var skip = (pageNumber - 1) * productsPerPage;
+            var skip = (pageNumber - 1) * productsPerPage;
             var TotalProducts = await _context.Products.CountAsync();
 
             if (skip >= TotalProducts)
@@ -131,23 +129,25 @@ namespace online_store.Repositories.PRODUCTS
             }
 
             var Product = new List<ProductReadDto>();
-            Product = await (from p in _context.Products
-                             join c in _context.Categories
-                             on p.CategoryId equals c.CategoryId
+           
+            Product = await _context.Products
+                .Include(x => x.Category)
+                .Select(p => new ProductReadDto
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    VendorId = p.VendorId,
+                    Description = p.Description,
+                    ProductName = p.ProductName,
+                    MainImageUrl = p.MainImageUrl,
+                    Price = p.Price,
+                    Category = p.Category.CategoryName , 
+                    CategoryId = p.Category.CategoryId
+                })
+                .Skip(skip)
+                .Take(productsPerPage)
+                .ToListAsync();
 
-                             select new ProductReadDto
-                             {
-                                 ProductId = p.ProductId,
-                                 CategoryId = c.CategoryId,
-                                 Category = c.CategoryName,
-                                 Price = p.Price,
-                                 ImageUrl = p.ImageUrl,
-                                 ProductName = p.ProductName,
-                                 Quantity = p.Quantity,
-                                 VendorId = p.VendorId,
-                                 Description = p.Description
-
-                             }).Skip(skip).Take(productsPerPage).ToListAsync();
 
             return Product;
 
@@ -164,26 +164,22 @@ namespace online_store.Repositories.PRODUCTS
 
             var Product = new List<ProductReadDto>();
 
-            Product = await (from p in _context.Products
-                            join c in _context.Categories
-                            on p.CategoryId equals c.CategoryId
-
-                            where  p.ProductName.ToLower().Contains(productName)
-
-                            select new ProductReadDto
-                            {
-                                ProductId = p.ProductId,
-                                CategoryId = c.CategoryId,
-                                Category = c.CategoryName,
-                                Price = p.Price,
-                                ImageUrl = p.ImageUrl,
-                                ProductName = p.ProductName,
-                                Quantity = p.Quantity,
-                                VendorId = p.VendorId,
-                                Description = p.Description
-
-                            }).ToListAsync();
-
+            Product = await _context.Products
+                .Where(p=>p.ProductName.ToLower().Contains(productName))
+                .Include(x => x.Category)
+                .Select(p => new ProductReadDto
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    VendorId = p.VendorId,
+                    Description = p.Description,
+                    ProductName = p.ProductName,
+                    MainImageUrl = p.MainImageUrl,
+                    Price = p.Price,
+                    Category = p.Category.CategoryName,
+                    CategoryId = p.Category.CategoryId
+                })
+                .ToListAsync();
             return Product;
         }
 
@@ -218,7 +214,7 @@ namespace online_store.Repositories.PRODUCTS
                 
                 CurrentProduct.Description = updatedProduct.Description;
                 CurrentProduct.CategoryId = updatedProduct.CategoryId;
-                CurrentProduct.ImageUrl = updatedProduct.ImageUrl;
+                CurrentProduct.MainImageUrl = updatedProduct.MainImageUrl;
                 CurrentProduct.ProductName = updatedProduct.ProductName;
                 CurrentProduct.Quantity = updatedProduct.Quantity;
                 CurrentProduct.Price = updatedProduct.Price;

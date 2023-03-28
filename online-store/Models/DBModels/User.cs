@@ -28,4 +28,6 @@ public partial class User
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
 
     public virtual ICollection<Product> Products { get; } = new List<Product>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
 }

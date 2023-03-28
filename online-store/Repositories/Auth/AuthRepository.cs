@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using online_store.Authentication_Service;
+using online_store.Authentication_Services;
 using online_store.AutoMapper;
 using online_store.Helper;
 
@@ -9,10 +9,13 @@ namespace online_store.Repositories.Auth
     {
         private readonly OnlineStoreContext _context;
         private readonly IMapper mapper;
-        public AuthRepository(OnlineStoreContext context , IMapper mapper)
+        private readonly HashServices hashServices;
+        public AuthRepository(OnlineStoreContext context , IMapper mapper
+            , HashServices hashServices)
         {
             _context = context;
             this.mapper = mapper;
+            this.hashServices = hashServices;
         }
 
         public async Task<VerifyOfRequest> Register(CustomerDTO customerDTO, string Role = "user")
@@ -44,6 +47,8 @@ namespace online_store.Repositories.Auth
             // <wonna be returned > (source )
             Customer = mapper.Map<User>(customerDTO);
             UserAddress = mapper.Map<Address>(customerDTO);
+            //UserAddress.
+
             Customer.Role = Role;
 
             byte[] passwordHash;
@@ -51,7 +56,7 @@ namespace online_store.Repositories.Auth
            
             try
             {
-                HashServices.CreatePasswordHash(customerDTO.Password, out passwordHash, out passwordSalt);
+                hashServices.CreatePasswordHash(customerDTO.Password, out passwordHash, out passwordSalt);
 
                 Customer.PasswordHash = passwordHash;
                 Customer.PasswordSalt = passwordSalt;
@@ -64,10 +69,9 @@ namespace online_store.Repositories.Auth
                 int AddressIdInDb = await _context.Addresses
                     .Where(
                     x => x.City == customerDTO.City
-                    && x.AddressLine == customerDTO.AddressLine
+                    && x.StreetAddress == customerDTO.StreetAddress
                     && x.StreetNumber == customerDTO.StreetNumber
-                    && x.Country == customerDTO.Country
-                    && x.PostalCode == customerDTO.PostalCode
+                    && x.ZipCode == customerDTO.ZipCode
                     && x.ApartmentNumber == customerDTO.ApartmentNumber 
                     && x.HomeNumber == customerDTO.HomeNumber
                     )
@@ -96,7 +100,9 @@ namespace online_store.Repositories.Auth
 
         public async Task<User> GetUser(string email)
         {
-            var targetUser = await _context.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
+            var targetUser = await _context.Users
+                .Where(x => x.Email == email)
+                .FirstOrDefaultAsync();
             return targetUser;
         }
     }

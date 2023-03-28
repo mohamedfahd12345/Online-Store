@@ -3,20 +3,19 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using online_store.Repositories.UnitOfWork;
-
+using online_store.Repositories.PRODUCTS;
 namespace online_store.Controllers
 {
     //[Authorize(Roles = "vendor")]
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IUnitOfWork _UnitOfWork;
+        private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
 
-        public ProductController(IUnitOfWork unitOfWork , IMapper mapper)
+        public ProductController(IProductRepository productRepository, IMapper mapper)
         {
-            _UnitOfWork = unitOfWork;
+            this.productRepository = productRepository;
             this.mapper = mapper;
         }
 
@@ -24,13 +23,13 @@ namespace online_store.Controllers
         public  async Task<IActionResult> GetAllProducts()
         {
           
-            return Ok(await _UnitOfWork.productRepository.GetAllProducts());
+            return Ok(await productRepository.GetAllProducts());
         }
 
         [HttpGet, Route("/Products/{productsPerPage}/{pageNumber}")]
         public async Task<IActionResult> GetProducts(int productsPerPage, int pageNumber)
         {
-               return Ok(await _UnitOfWork.productRepository.GetProducts(productsPerPage, pageNumber));
+               return Ok(await productRepository.GetProducts(productsPerPage, pageNumber));
         }
 
         [HttpPost , Route("/Products")]
@@ -51,7 +50,7 @@ namespace online_store.Controllers
 
              new_Product.VendorId = vendorId_Int;
 
-            VerifyOfRequest = await _UnitOfWork.productRepository.AddProduct(new_Product);
+            VerifyOfRequest = await productRepository.AddProduct(new_Product);
 
             if (VerifyOfRequest.Errorexisting == true)
             {
@@ -65,7 +64,7 @@ namespace online_store.Controllers
         [HttpGet , Route("/Count-Products")]
         public async Task<IActionResult> GetCountOfProducts()
         {
-            return Ok( await _UnitOfWork.productRepository.GetCountOfProducts());
+            return Ok( await productRepository.GetCountOfProducts());
         }
 
 
@@ -73,7 +72,7 @@ namespace online_store.Controllers
         public async Task<IActionResult> GetProductById(int ProductId)
         {
             var product = new ProductReadDto();
-            product = await _UnitOfWork.productRepository.GetProductById(ProductId);
+            product = await productRepository.GetProductById(ProductId);
             if(product is null)
             {
                 return NotFound("This Product not exist to get it");
@@ -85,7 +84,7 @@ namespace online_store.Controllers
         [HttpGet, Route("/Product/{ProductName}")]
         public async Task<IActionResult> SearchByName(string ProductName)
         {
-            return Ok(await _UnitOfWork.productRepository.GetProductsByName(ProductName));
+            return Ok(await productRepository.GetProductsByName(ProductName));
         }
 
 
@@ -97,14 +96,14 @@ namespace online_store.Controllers
             {
                 return BadRequest("id in object doesn't match with id in Parameters");
             }
-            if(await _UnitOfWork.productRepository.IsProductExist(productId) == false)
+            if(await  productRepository.IsProductExist(productId) == false)
             {
                 return NotFound($"can't found product with id {productId}");
             }
 
             var VerifyOfRequest = new VerifyOfRequest();
 
-            VerifyOfRequest = await _UnitOfWork.productRepository.UpdateProduct(updatedProduct);
+            VerifyOfRequest = await  productRepository.UpdateProduct(updatedProduct);
 
             if(VerifyOfRequest.Errorexisting == true)
             {
@@ -117,14 +116,14 @@ namespace online_store.Controllers
         [HttpDelete, Route("/Products/{productId}")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
-            if (await _UnitOfWork.productRepository.IsProductExist(productId) == false)
+            if (await  productRepository.IsProductExist(productId) == false)
             {
                 return NotFound($"can't found product with id {productId}");
             }
 
             var VerifyOfRequest = new VerifyOfRequest();
 
-            VerifyOfRequest = await _UnitOfWork.productRepository.Deleteproduct(productId);
+            VerifyOfRequest = await productRepository.Deleteproduct(productId);
 
             if(VerifyOfRequest.Errorexisting == true)
             {

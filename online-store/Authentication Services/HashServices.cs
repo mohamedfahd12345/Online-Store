@@ -1,10 +1,10 @@
 ﻿using System.Security.Cryptography;
 
-namespace online_store.Authentication_Service
+namespace online_store.Authentication_Services
 {
     public class HashServices
     {
-        public static  void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public   void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
@@ -14,7 +14,7 @@ namespace online_store.Authentication_Service
         }
 
 
-        public static  bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        public   bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {
