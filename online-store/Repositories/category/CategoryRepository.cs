@@ -84,15 +84,18 @@ namespace online_store.Repositories.category
 
         public async Task<Category> GetById(int categoryId)
         {
-            var targetCategory = await _context.Categories.Where(x => x.CategoryId == categoryId)
+            var targetCategory = await _context.Categories
+                .Where(x => x.CategoryId == categoryId)
                 .FirstOrDefaultAsync();
             return targetCategory;
         }
 
         public async Task<bool> IsCategoryExist(int categoryId)
         {
-            var targetCategory = await _context.Categories.Where(x => x.CategoryId == categoryId)
-                .Select(x => x.CategoryId).FirstOrDefaultAsync();
+            var targetCategory = await _context.Categories
+                .Where(x => x.CategoryId == categoryId)
+                .Select(x => x.CategoryId)
+                .FirstOrDefaultAsync();
 
             if (targetCategory == 0) return false;
 
@@ -102,6 +105,7 @@ namespace online_store.Repositories.category
         public async Task<int> GetCountOfCategories()
         {
             int count = await _context.Categories.CountAsync();
+
             return count;
         }
     }

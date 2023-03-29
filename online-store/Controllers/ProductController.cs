@@ -26,14 +26,16 @@ namespace online_store.Controllers
             return Ok(await productRepository.GetAllProducts());
         }
 
-        [HttpGet, Route("/Products/{productsPerPage}/{pageNumber}")]
-        public async Task<IActionResult> GetProducts(int productsPerPage, int pageNumber)
+        [HttpGet, Route("/Products/{productsPerPage:int}/{pageNumber:int}")]
+        public async Task<IActionResult> GetProducts([FromRoute] int productsPerPage,[FromRoute] int pageNumber)
         {
                return Ok(await productRepository.GetProducts(productsPerPage, pageNumber));
         }
 
+
+        [Authorize(Roles = "vendor")]
         [HttpPost , Route("/Products")]
-        public async Task<IActionResult> CreateProduct(ProductWriteDto productDto)
+        public async Task<IActionResult> CreateProduct([FromBody]ProductWriteDto productDto)
         {
             if(productDto == null || !ModelState.IsValid)
             {
@@ -68,8 +70,8 @@ namespace online_store.Controllers
         }
 
 
-        [HttpGet, Route("/Products/{ProductId}")]
-        public async Task<IActionResult> GetProductById(int ProductId)
+        [HttpGet, Route("/Products/{ProductId:int}")]
+        public async Task<IActionResult> GetProductById([FromRoute]int ProductId)
         {
             var product = new ProductReadDto();
             product = await productRepository.GetProductById(ProductId);
@@ -81,16 +83,16 @@ namespace online_store.Controllers
         }
 
 
-        [HttpGet, Route("/Product/{ProductName}")]
-        public async Task<IActionResult> SearchByName(string ProductName)
+        [HttpGet, Route("/Product/{ProductName:alpha}")]
+        public async Task<IActionResult> SearchByName([FromRoute]string ProductName)
         {
             return Ok(await productRepository.GetProductsByName(ProductName));
         }
 
 
-
-        [HttpPut, Route("/Products/{productId}")]
-        public async Task<IActionResult> UpdateProduct(int productId , ProductReadDto updatedProduct)
+        [Authorize(Roles = "vendor")]
+        [HttpPut, Route("/Products/{productId:int}")]
+        public async Task<IActionResult> UpdateProduct([FromRoute]int productId ,[FromBody] ProductReadDto updatedProduct)
         {
             if(updatedProduct.ProductId != productId)
             {
@@ -113,8 +115,10 @@ namespace online_store.Controllers
             return Ok("Product Updated Successfully");
         }
 
-        [HttpDelete, Route("/Products/{productId}")]
-        public async Task<IActionResult> DeleteProduct(int productId)
+
+        [Authorize(Roles = "vendor")]
+        [HttpDelete, Route("/Products/{productId:int}")]
+        public async Task<IActionResult> DeleteProduct([FromRoute]int productId)
         {
             if (await  productRepository.IsProductExist(productId) == false)
             {

@@ -101,7 +101,7 @@ namespace online_store.Controllers
             var token = await TokenServices.RefreshToken(requestToken);
             if(token is null)
             {
-                return BadRequest(new { error = "Invail Token" });
+                return BadRequest(new { error = "Invaild Token" });
             }
             return Ok(token);
         }

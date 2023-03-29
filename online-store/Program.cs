@@ -11,12 +11,13 @@ using Swashbuckle.AspNetCore.Filters;
 using online_store.Repositories.category;
 using online_store.Repositories.PRODUCTS;
 using online_store.Authentication_Services;
-
+using online_store.MiddleWares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddHealthChecks();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -33,13 +34,12 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-//Add services to the DbContext
 var connetionString = builder.Configuration.GetSection("ConnectionStrings:MyDatabase").Value;
 builder.Services.AddDbContext<OnlineStoreContext>(options =>
     options.UseSqlServer(connetionString)
 );
 
-//========================================================================================
+
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -47,7 +47,7 @@ builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<HashServices>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-//========================================================================================
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -61,18 +61,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
     });
-//========================================================================================
+
+
+//================================= -> MIDDLEWARES <- =========================================
 var app = builder.Build();
-
-
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseHealthChecks("/health");
 
 app.MapControllers();
 

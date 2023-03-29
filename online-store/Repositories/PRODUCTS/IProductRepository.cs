@@ -2,7 +2,7 @@
 {
     public interface IProductRepository
     {
-        public  Task<List<Product>> GetProductsByCategoryID(int categoryId);
+        public Task<List<ProductReadDto>> GetProductsByCategoryID(int categoryId);
         public Task<List<ProductReadDto>> GetProductsByName(string name);
         
         public Task<List<ProductReadDto>> GetAllProducts();

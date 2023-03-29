@@ -6,12 +6,13 @@ using online_store.Repositories.category;
 
 namespace online_store.Controllers
 {
-    [Authorize (Roles ="vendor")]
+    
     [ApiController]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
+
         public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
         {
             this.categoryRepository = categoryRepository;
@@ -25,9 +26,9 @@ namespace online_store.Controllers
             return Ok(mapper.Map<List<CategoryReadDTO>>(await categoryRepository.GetAllCategory())) ;
         }
 
-
+        [Authorize(Roles = "vendor")]
         [HttpPost, Route("/categories")]
-        public async Task<IActionResult> CreateCategories(CategoryDTO categoryDTO)
+        public async Task<IActionResult> CreateCategories([FromBody]CategoryDTO categoryDTO)
         {
             if(categoryDTO == null || !ModelState.IsValid)
             {
@@ -45,9 +46,9 @@ namespace online_store.Controllers
             return BadRequest(VerifyOfRequest.ErrorDetails);
         }
 
-
-        [HttpDelete, Route("/categories/{categoryId}")]
-        public async Task<IActionResult> DeleteCategories(int categoryId)
+        [Authorize(Roles = "vendor")]
+        [HttpDelete, Route("/categories/{categoryId:int}")]
+        public async Task<IActionResult> DeleteCategories([FromRoute]int categoryId)
         {
             if (await categoryRepository.IsCategoryExist(categoryId) == false)
             {
@@ -68,8 +69,9 @@ namespace online_store.Controllers
         }
 
 
-        [HttpPut, Route("/categories/{categoryId}")]
-        public async Task<IActionResult> UpdateCategories(int categoryId , CategoryReadDTO updatedCategory)
+        [Authorize(Roles = "vendor")]
+        [HttpPut, Route("/categories/{categoryId:int}")]
+        public async Task<IActionResult> UpdateCategories([FromRoute]int categoryId ,[FromBody] CategoryReadDTO updatedCategory)
         {
             if(categoryId != updatedCategory.CategoryId)
             {
@@ -91,8 +93,8 @@ namespace online_store.Controllers
         }
 
 
-        [HttpGet, Route("/categories/{categoryId}")]
-        public async Task<IActionResult> GetCategoryByID(int categoryId) 
+        [HttpGet, Route("/categories/{categoryId:int}")]
+        public async Task<IActionResult> GetCategoryByID([FromRoute]int categoryId) 
         {
             var category =await categoryRepository.GetById(categoryId);
             if ( category is null)

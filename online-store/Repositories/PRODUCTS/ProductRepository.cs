@@ -69,9 +69,9 @@ namespace online_store.Repositories.PRODUCTS
 
         public async Task<List<ProductReadDto>> GetAllProducts()
         {
-            var Product = new List<ProductReadDto>();
+            
 
-            Product = await _context.Products
+            var Products = await _context.Products
                 .Include(x => x.Category)
                 .Select(p => new ProductReadDto
                 {
@@ -83,19 +83,19 @@ namespace online_store.Repositories.PRODUCTS
                     MainImageUrl = p.MainImageUrl,
                     Price = p.Price,
                     Category = p.Category.CategoryName,
-                    CategoryId = p.Category.CategoryId
+                    CategoryId = p.CategoryId
                 })
                 .ToListAsync();
 
-            return Product;
+            return Products;
            
         }
 
         public async Task<ProductReadDto> GetProductById(int productid)
         {
-            var Product = new ProductReadDto();
+            
 
-             Product = await _context.Products
+             var Products = await _context.Products
                 .Where(p=>p.ProductId == productid)
                 .Include(x => x.Category)
                 .Select(p => new ProductReadDto
@@ -108,11 +108,11 @@ namespace online_store.Repositories.PRODUCTS
                     MainImageUrl = p.MainImageUrl,
                     Price = p.Price,
                     Category = p.Category.CategoryName,
-                    CategoryId = p.Category.CategoryId
+                    CategoryId = p.CategoryId
                 })
                 .FirstOrDefaultAsync();
 
-            return Product;
+            return Products;
         }
 
         public async Task<List<ProductReadDto>> GetProducts(int productsPerPage, int pageNumber)
@@ -128,9 +128,8 @@ namespace online_store.Repositories.PRODUCTS
                 return null;
             }
 
-            var Product = new List<ProductReadDto>();
            
-            Product = await _context.Products
+            var Products = await _context.Products
                 .Include(x => x.Category)
                 .Select(p => new ProductReadDto
                 {
@@ -142,29 +141,44 @@ namespace online_store.Repositories.PRODUCTS
                     MainImageUrl = p.MainImageUrl,
                     Price = p.Price,
                     Category = p.Category.CategoryName , 
-                    CategoryId = p.Category.CategoryId
+                    CategoryId = p.CategoryId
                 })
                 .Skip(skip)
                 .Take(productsPerPage)
                 .ToListAsync();
 
 
-            return Product;
+            return Products;
 
         }
 
-        public async Task<List<Product>> GetProductsByCategoryID(int categoryId)
+        public async Task<List<ProductReadDto>> GetProductsByCategoryID(int categoryId)
         {
-            throw new NotImplementedException();
+            var Products = await _context.Products
+                .Where(x => x.CategoryId == categoryId)
+                .Include(x => x.Category)
+                .Select(p => new ProductReadDto
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    VendorId = p.VendorId,
+                    Description = p.Description,
+                    ProductName = p.ProductName,
+                    MainImageUrl = p.MainImageUrl,
+                    Price = p.Price,
+                    Category = p.Category.CategoryName,
+                    CategoryId = p.CategoryId
+                })
+                .ToListAsync();
+            return Products;
         }
 
         public async Task<List<ProductReadDto>> GetProductsByName(string name)
         {
             var productName = name.Trim().ToLower();
 
-            var Product = new List<ProductReadDto>();
-
-            Product = await _context.Products
+            
+            var Products = await _context.Products
                 .Where(p=>p.ProductName.ToLower().Contains(productName))
                 .Include(x => x.Category)
                 .Select(p => new ProductReadDto
@@ -177,22 +191,25 @@ namespace online_store.Repositories.PRODUCTS
                     MainImageUrl = p.MainImageUrl,
                     Price = p.Price,
                     Category = p.Category.CategoryName,
-                    CategoryId = p.Category.CategoryId
+                    CategoryId = p.CategoryId
                 })
                 .ToListAsync();
-            return Product;
+            return Products;
         }
 
         public async Task<bool> IsProductExist(int productId)
         {
-            return await _context.Products.AnyAsync(x=>x.ProductId == productId);
+            return await _context.Products
+                .AnyAsync(x=>x.ProductId == productId);
         }
 
         public async Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct)
         {
             var VerifyOfRequest = new VerifyOfRequest();
 
-            var ExistCategory = await _context.Categories.AnyAsync(x => x.CategoryId == updatedProduct.CategoryId);
+            var ExistCategory = await _context.Categories
+                .AnyAsync(x => x.CategoryId == updatedProduct.CategoryId);
+
             if (ExistCategory == false)
             {
                 VerifyOfRequest.ErrorDetails = "This Category Does not exist ";
@@ -200,7 +217,9 @@ namespace online_store.Repositories.PRODUCTS
                 return VerifyOfRequest;
             }
 
-            var ExistVendor = await _context.Users.AnyAsync(x => x.UserId == updatedProduct.VendorId);
+            var ExistVendor = await _context.Users
+                .AnyAsync(x => x.UserId == updatedProduct.VendorId);
+
             if (ExistVendor == false)
             {
                 VerifyOfRequest.ErrorDetails = "This Vendor Does not exist ";
