@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Diagnostics;
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,8 +23,18 @@ namespace online_store.Controllers
         [HttpGet , Route("/Products")]
         public  async Task<IActionResult> GetAllProducts()
         {
-          
-            return Ok(await productRepository.GetAllProducts());
+            //return Ok(await productRepository.GetAllProducts());
+            Stopwatch stopwatch = new Stopwatch();
+
+            // Start the stopwatch
+            stopwatch.Start();
+            var ans = await productRepository.GetAllProducts();
+            stopwatch.Stop();
+
+            // Get the elapsed time in milliseconds
+            long elapsedMs = stopwatch.ElapsedMilliseconds;
+            Console.WriteLine(elapsedMs);
+            return Ok(ans);
         }
 
         [HttpGet, Route("/Products/{productsPerPage:int}/{pageNumber:int}")]

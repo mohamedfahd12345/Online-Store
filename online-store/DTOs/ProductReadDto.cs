@@ -23,7 +23,7 @@ public class ProductReadDto
     public int? VendorId { get; set; } 
     public int ProductId { get; set; }
     public string? Category { get; set; }
-    public List<Image> imagesUrl { get; set; } = new List<Image>();
+    public List<ImageDto> imagesUrl { get; set; } = new List<ImageDto>();
 
     
       

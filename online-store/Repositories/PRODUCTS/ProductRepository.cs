@@ -81,10 +81,11 @@ namespace online_store.Repositories.PRODUCTS
         public async Task<List<ProductReadDto>> GetAllProducts()
         {
             
-
             var Products = await _context.Products
                 .Include(x => x.Category)
                 .Include(x=>x.Images)
+                .AsSplitQuery()
+                .AsNoTracking()
                 .Select(p => new ProductReadDto
                 {
                     ProductId = p.ProductId,
@@ -96,8 +97,13 @@ namespace online_store.Repositories.PRODUCTS
                     Price = p.Price,
                     Category = p.Category.CategoryName,
                     CategoryId = p.CategoryId ,
-                    imagesUrl = p.Images.ToList()
-                    
+                    imagesUrl = p.Images
+                                 .Select(x=>new ImageDto
+                                 {
+                                     ImageUrl =x.ImageUrl,
+                                     ProductId = x.ProductId,
+                                     ImageId = x.Id
+                                 }).ToList()
                 })
                 .ToListAsync();
 
