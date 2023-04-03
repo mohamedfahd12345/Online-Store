@@ -28,11 +28,6 @@ namespace online_store.AutoMapper
             CreateMap<ProductReadDto, Product>();
 
 
-           // ProductReadDto
-
-
-
-
 
         }
     }

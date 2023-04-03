@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using online_store.Repositories.PRODUCTS;
 namespace online_store.Controllers
 {
-    //[Authorize(Roles = "vendor")]
+    
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -37,22 +37,23 @@ namespace online_store.Controllers
         [HttpPost , Route("/Products")]
         public async Task<IActionResult> CreateProduct([FromBody]ProductWriteDto productDto)
         {
-            if(productDto == null || !ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
-                return BadRequest("Invaild Reqest");
+                return BadRequest("Invaild Input");
             }
 
              var VerifyOfRequest = new VerifyOfRequest();
 
-             var new_Product = new Product();
-             new_Product = mapper.Map<Product>(productDto);
+             
+             var new_Product = mapper.Map<Product>(productDto);
+            
 
              var vendorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
              int vendorId_Int = Int32.Parse(vendorId);
 
              new_Product.VendorId = vendorId_Int;
 
-            VerifyOfRequest = await productRepository.AddProduct(new_Product);
+            VerifyOfRequest = await productRepository.AddProduct(new_Product , productDto.imagesUrl);
 
             if (VerifyOfRequest.Errorexisting == true)
             {
@@ -73,8 +74,8 @@ namespace online_store.Controllers
         [HttpGet, Route("/Products/{ProductId:int}")]
         public async Task<IActionResult> GetProductById([FromRoute]int ProductId)
         {
-            var product = new ProductReadDto();
-            product = await productRepository.GetProductById(ProductId);
+            
+            var product = await productRepository.GetProductById(ProductId);
             if(product is null)
             {
                 return NotFound("This Product not exist to get it");
@@ -139,6 +140,10 @@ namespace online_store.Controllers
 
         }
 
-
+        [HttpGet("/products-category /{categoryId:int}")]
+        public async Task<IActionResult> GetProductsByCategoryID([FromRoute] int categoryId)
+        {
+            return Ok(await productRepository.GetProductsByCategoryID(categoryId));
+        }
     }
 }

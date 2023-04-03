@@ -14,7 +14,7 @@ namespace online_store.Repositories.PRODUCTS
         }
 
 
-        public async Task<VerifyOfRequest> AddProduct(Product product)
+        public async Task<VerifyOfRequest> AddProduct(Product product , List<string> imgesUrl)
         {
             var VerifyOfRequest = new VerifyOfRequest();
 
@@ -36,10 +36,21 @@ namespace online_store.Repositories.PRODUCTS
 
             try
             {
+                
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
+
+                var ImagesUrl = new List<Image>();
+                foreach (var it in imgesUrl)
+                {
+                    ImagesUrl.Add(new Image { ImageUrl = it, ProductId = product.ProductId });
+                }
+
+                await _context.Images
+                    .AddRangeAsync(ImagesUrl);
+                await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 VerifyOfRequest.ErrorDetails = ex.Message;
                 VerifyOfRequest.Errorexisting = true;
@@ -73,6 +84,7 @@ namespace online_store.Repositories.PRODUCTS
 
             var Products = await _context.Products
                 .Include(x => x.Category)
+                .Include(x=>x.Images)
                 .Select(p => new ProductReadDto
                 {
                     ProductId = p.ProductId,
@@ -83,7 +95,9 @@ namespace online_store.Repositories.PRODUCTS
                     MainImageUrl = p.MainImageUrl,
                     Price = p.Price,
                     Category = p.Category.CategoryName,
-                    CategoryId = p.CategoryId
+                    CategoryId = p.CategoryId ,
+                    imagesUrl = p.Images.ToList()
+                    
                 })
                 .ToListAsync();
 

@@ -10,7 +10,7 @@
 
         public Task<ProductReadDto> GetProductById(int productid);
 
-        public Task<VerifyOfRequest> AddProduct(Product product);
+        public Task<VerifyOfRequest> AddProduct(Product product , List<string>imgesUrl);
         public Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct);
         public Task<VerifyOfRequest> Deleteproduct(int productId);
 

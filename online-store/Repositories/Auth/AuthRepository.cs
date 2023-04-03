@@ -47,7 +47,7 @@ namespace online_store.Repositories.Auth
             // <wonna be returned > (source )
             Customer = mapper.Map<User>(customerDTO);
             UserAddress = mapper.Map<Address>(customerDTO);
-            //UserAddress.
+            
 
             Customer.Role = Role;
 
@@ -64,20 +64,11 @@ namespace online_store.Repositories.Auth
                
                 await _context.Addresses.AddAsync(UserAddress);
                 await _context.SaveChangesAsync();
-               
-               
-                int AddressIdInDb = await _context.Addresses
-                    .Where(
-                    x => x.City == customerDTO.City
-                    && x.StreetAddress == customerDTO.StreetAddress
-                    && x.StreetNumber == customerDTO.StreetNumber
-                    && x.ZipCode == customerDTO.ZipCode
-                    && x.ApartmentNumber == customerDTO.ApartmentNumber 
-                    && x.HomeNumber == customerDTO.HomeNumber
-                    )
-                    .Select(x => x.AddressId).FirstOrDefaultAsync();
-                
-                
+
+
+                int AddressIdInDb = UserAddress.AddressId;
+
+
                 Customer.AddressId = AddressIdInDb;
                 
 
