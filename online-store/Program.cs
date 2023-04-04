@@ -12,6 +12,7 @@ using online_store.Repositories.category;
 using online_store.Repositories.PRODUCTS;
 using online_store.Authentication_Services;
 using online_store.MiddleWares;
+using online_store.test;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<HashServices>();
+builder.Services.AddScoped<tempclass>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
