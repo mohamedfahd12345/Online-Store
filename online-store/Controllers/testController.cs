@@ -28,7 +28,8 @@ namespace online_store.Controllers
         {
 
 
-            var res = await _tempclass.GetProducts(t);
+            //var res = await _tempclass.GetProducts(t);
+            var res = await _tempclass.GetProducts(x=>x.ProductId != null);
             return Ok(res);
 
 

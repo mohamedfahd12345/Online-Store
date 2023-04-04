@@ -19,7 +19,7 @@ namespace online_store.Authentication_Services
 
         public   bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512(passwordSalt))
+            using (var hmac = new HMACSHA512())
             {
                 byte[] computedHash;
                 computedHash = System.Text.Encoding.UTF8.GetBytes(password);

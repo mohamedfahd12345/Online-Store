@@ -37,10 +37,11 @@ namespace online_store.Controllers
             return Ok(ans);
         }
 
-        [HttpGet, Route("/Products/{productsPerPage:int}/{pageNumber:int}")]
-        public async Task<IActionResult> GetProducts([FromRoute] int productsPerPage,[FromRoute] int pageNumber)
+        
+        [HttpGet, Route("/Products/{pageNumber:int}/{pagesize:int}")]
+        public async Task<IActionResult> GetProducts([FromRoute] int pageNumber, [FromRoute] int pagesize)
         {
-               return Ok(await productRepository.GetProducts(productsPerPage, pageNumber));
+               return Ok(await productRepository.GetProducts(pagesize, pageNumber));
         }
 
 

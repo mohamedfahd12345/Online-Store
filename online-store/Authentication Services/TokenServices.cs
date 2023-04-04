@@ -92,6 +92,7 @@ namespace online_store.Authentication_Services
             var targetRefreshToken =await _context.RefreshTokens
                 .Where(t => t.RefreshToken1 == requestToken.refreshToken)
                 .FirstOrDefaultAsync();
+
             if(targetRefreshToken is null)
             {
                 return null;
@@ -102,15 +103,30 @@ namespace online_store.Authentication_Services
                 return null;
             }
 
+            if (targetRefreshToken.IsUsed == true || targetRefreshToken.IsRevoked == true)
+            {
+                return null;
+            }
+
             if (targetRefreshToken.IsExpired == true)
             {
                 return null;
             }
 
-            if( targetRefreshToken.IsUsed == true || targetRefreshToken.IsRevoked == true)
+            if(targetRefreshToken.ExpirationDate < DateTime.UtcNow)
             {
+                targetRefreshToken.IsExpired = true;
+                targetRefreshToken.IsRevoked = true;
+                targetRefreshToken.IsUsed = true;
+
+                _context.RefreshTokens
+                    .Update(targetRefreshToken);
+
+                await _context.SaveChangesAsync();
+
                 return null;
             }
+
 
             targetRefreshToken.IsExpired = true;
             targetRefreshToken.IsRevoked = true;
@@ -142,17 +158,34 @@ namespace online_store.Authentication_Services
                 return false;
             }
 
-            
+           
+
+            if (targetRefreshToken.IsUsed == true || targetRefreshToken.IsRevoked == true)
+            {
+                return false;
+            }
+
 
             if (targetRefreshToken.IsExpired == true)
             {
                 return false;
             }
 
-            if (targetRefreshToken.IsUsed == true || targetRefreshToken.IsRevoked == true)
+            if (targetRefreshToken.ExpirationDate < DateTime.UtcNow)
             {
+                targetRefreshToken.IsExpired = true;
+                targetRefreshToken.IsRevoked = true;
+                targetRefreshToken.IsUsed = true;
+
+                _context.RefreshTokens
+                    .Update(targetRefreshToken);
+
+                await _context.SaveChangesAsync();
+
                 return false;
             }
+
+
 
             targetRefreshToken.IsExpired = true;
             targetRefreshToken.IsRevoked = true;
