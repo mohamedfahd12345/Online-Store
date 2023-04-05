@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace online_store.Authentication_Services
 {
@@ -9,9 +10,8 @@ namespace online_store.Authentication_Services
             using (var hmac = new HMACSHA512())
             {
                 passwordSalt = hmac.Key;
-                passwordHash = System.Text.Encoding.UTF8.GetBytes(password);
-                passwordHash = passwordSalt.Concat(passwordHash).ToArray();
-                passwordHash = hmac.ComputeHash(passwordHash);
+                var passwordSaltString = Convert.ToBase64String(passwordSalt);
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password + passwordSaltString));
 
             }
         }
@@ -19,13 +19,10 @@ namespace online_store.Authentication_Services
 
         public   bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512())
+            using (var hmac = new HMACSHA512(passwordSalt))
             {
-                byte[] computedHash;
-                computedHash = System.Text.Encoding.UTF8.GetBytes(password);
-                computedHash = passwordSalt.Concat(computedHash).ToArray();
-
-                computedHash = hmac.ComputeHash(computedHash);
+                var passwordSaltString = Convert.ToBase64String(passwordSalt);
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password + passwordSaltString));
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
