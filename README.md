@@ -8,7 +8,8 @@
 3.ASP .NET CORE <br>
 4.Entity Framework Core  <br>
 5.microsoft sql server  <br>
-6. RESTful  api<br>
-7. JWT <br>
-8. Auto Mapper 
 
+
+<h2>How to run?</h2>
+1.Download the files <br>
+2.Open it in your terminal then run "dotnet run"
