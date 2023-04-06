@@ -10,7 +10,7 @@ using online_store.Helper;
 
 namespace online_store.Controllers
 {
-    
+    [Route("api/")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace online_store.Controllers
             this.hashServices = hashServices;
         }
 
-        [HttpPost , Route("/customer/register")]
+        [HttpPost , Route("customer/register")]
         public async Task<IActionResult> Register([FromBody]CustomerDTO customerDTO)
         {
 
@@ -40,7 +40,7 @@ namespace online_store.Controllers
         }
 
 
-        [HttpPost , Route("/login")]
+        [HttpPost , Route("login")]
         public async Task<IActionResult> Login([FromBody] CustomerLoginDTO customerLoginDTO)
         {
            
@@ -66,7 +66,7 @@ namespace online_store.Controllers
         }
 
 
-        [HttpPost, Route("/admin/register")]
+        [HttpPost, Route("admin/register")]
         public async Task<IActionResult> AdminRegister([FromBody] CustomerDTO customerDTO)
         {
 
@@ -80,7 +80,7 @@ namespace online_store.Controllers
             return Ok();
         }
 
-        [HttpPost, Route("/vendor/register")]
+        [HttpPost, Route("vendor/register")]
         public async Task<IActionResult> VendorRegister([FromBody] CustomerDTO customerDTO)
         {
 
@@ -94,7 +94,7 @@ namespace online_store.Controllers
             return Ok();
         }
 
-        [HttpPost("/refresh-token")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RequestToken requestToken)
         {
             if (!ModelState.IsValid) { return BadRequest(new { error = "Ivaild Input" }); }
@@ -106,7 +106,7 @@ namespace online_store.Controllers
             return Ok(token);
         }
 
-        [HttpPost("/revoke-token")]
+        [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeToken model)
         {
             if (!ModelState.IsValid) { return BadRequest(new { error = "Ivaild Input" }); }

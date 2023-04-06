@@ -94,12 +94,20 @@ namespace online_store.Repositories.PRODUCTS
 
         }
 
-        public async Task<VerifyOfRequest> Deleteproduct(int productId)
+        public async Task<VerifyOfRequest> Deleteproduct(int productId , int userId)
         {
             var VerifyOfRequest = new VerifyOfRequest();
             try
             {
-                var TargetProduct = await _context.Products.Where(x => x.ProductId == productId).FirstOrDefaultAsync();
+                var TargetProduct = await _context.Products
+                    .Where(x => x.ProductId == productId)
+                    .FirstOrDefaultAsync();
+                if (TargetProduct.VendorId != userId)
+                {
+                    VerifyOfRequest.ErrorDetails = "403";
+                    VerifyOfRequest.Errorexisting = true;
+                    return VerifyOfRequest;
+                }
                 _context.Products.Remove(TargetProduct);
                 await _context.SaveChangesAsync();
             }
@@ -214,7 +222,7 @@ namespace online_store.Repositories.PRODUCTS
                 .AnyAsync(x=>x.ProductId == productId);
         }
 
-        public async Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct)
+        public async Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct ,int userId)
         {
             var VerifyOfRequest = new VerifyOfRequest();
 
@@ -228,20 +236,17 @@ namespace online_store.Repositories.PRODUCTS
                 return VerifyOfRequest;
             }
 
-            var ExistVendor = await _context.Users
-                .AnyAsync(x => x.UserId == updatedProduct.VendorId);
-
-            if (ExistVendor == false)
-            {
-                VerifyOfRequest.ErrorDetails = "This Vendor Does not exist ";
-                VerifyOfRequest.Errorexisting = true;
-                return VerifyOfRequest;
-            }
+           
 
             try
             {
                 var CurrentProduct = await _context.Products.Where(x => x.ProductId == updatedProduct.ProductId).FirstOrDefaultAsync();
-                
+                if(CurrentProduct.VendorId != userId)
+                {
+                    VerifyOfRequest.ErrorDetails = "403";
+                    VerifyOfRequest.Errorexisting = true;
+                    return VerifyOfRequest;
+                }
                 CurrentProduct.Description = updatedProduct.Description;
                 CurrentProduct.CategoryId = updatedProduct.CategoryId;
                 CurrentProduct.MainImageUrl = updatedProduct.MainImageUrl;

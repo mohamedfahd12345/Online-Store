@@ -86,8 +86,3 @@ F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Microsoft.
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Scrutor.dll
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.dll
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
-F:\Product Review Analysis\online-store\online-store\obj\Debug\net6.0\staticwebassets\msbuild.online-store.Microsoft.AspNetCore.StaticWebAssets.props
-F:\Product Review Analysis\online-store\online-store\obj\Debug\net6.0\staticwebassets\msbuild.build.online-store.props
-F:\Product Review Analysis\online-store\online-store\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.online-store.props
-F:\Product Review Analysis\online-store\online-store\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.online-store.props
-F:\Product Review Analysis\online-store\online-store\obj\Debug\net6.0\staticwebassets.pack.json

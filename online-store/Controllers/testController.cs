@@ -6,7 +6,7 @@ using online_store.DTOs;
 using online_store.test;
 namespace online_store.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class testController : ControllerBase
     {
@@ -27,12 +27,9 @@ namespace online_store.Controllers
         public async Task<IActionResult> getElement(string productName)
         {
 
-
             //var res = await _tempclass.GetProducts(t);
             var res = await _tempclass.GetProducts(x=>x.ProductId != null);
             return Ok(res);
-
-
 
         }
 

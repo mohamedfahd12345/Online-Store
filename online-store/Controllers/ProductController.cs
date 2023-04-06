@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using online_store.Repositories.PRODUCTS;
 namespace online_store.Controllers
 {
-    
+    [Route("api/")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace online_store.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet , Route("/Products")]
+        [HttpGet , Route("Products")]
         public  async Task<IActionResult> GetAllProducts()
         {
             //return Ok(await productRepository.GetAllProducts());
@@ -38,7 +38,7 @@ namespace online_store.Controllers
         }
 
         
-        [HttpGet, Route("/Products/{pageNumber:int}/{pagesize:int}")]
+        [HttpGet, Route("Products/{pageNumber:int}/{pagesize:int}")]
         public async Task<IActionResult> GetProducts([FromRoute] int pageNumber, [FromRoute] int pagesize)
         {
                return Ok(await productRepository.GetProducts(pagesize, pageNumber));
@@ -46,7 +46,7 @@ namespace online_store.Controllers
 
 
         [Authorize(Roles = "vendor")]
-        [HttpPost , Route("/Products")]
+        [HttpPost , Route("Products")]
         public async Task<IActionResult> CreateProduct([FromBody]ProductWriteDto productDto)
         {
             if(!ModelState.IsValid)
@@ -76,14 +76,14 @@ namespace online_store.Controllers
         }
 
 
-        [HttpGet , Route("/Count-Products")]
+        [HttpGet , Route("Count-Products")]
         public async Task<IActionResult> GetCountOfProducts()
         {
             return Ok( await productRepository.GetCountOfProducts());
         }
 
 
-        [HttpGet, Route("/Products/{ProductId:int}")]
+        [HttpGet, Route("Products/{ProductId:int}")]
         public async Task<IActionResult> GetProductById([FromRoute]int ProductId)
         {
             
@@ -96,7 +96,7 @@ namespace online_store.Controllers
         }
 
 
-        [HttpGet, Route("/Product/{ProductName:alpha}")]
+        [HttpGet, Route("Product/{ProductName:alpha}")]
         public async Task<IActionResult> SearchByName([FromRoute]string ProductName)
         {
             return Ok(await productRepository.GetProductsByName(ProductName));
@@ -104,7 +104,7 @@ namespace online_store.Controllers
 
 
         [Authorize(Roles = "vendor")]
-        [HttpPut, Route("/Products/{productId:int}")]
+        [HttpPut, Route("Products/{productId:int}")]
         public async Task<IActionResult> UpdateProduct([FromRoute]int productId ,[FromBody] ProductReadDto updatedProduct)
         {
             if(updatedProduct.ProductId != productId)
@@ -116,12 +116,16 @@ namespace online_store.Controllers
                 return NotFound($"can't found product with id {productId}");
             }
 
-            var VerifyOfRequest = new VerifyOfRequest();
+            int  userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            VerifyOfRequest = await  productRepository.UpdateProduct(updatedProduct);
+            var VerifyOfRequest = await  productRepository.UpdateProduct(updatedProduct , userId);
 
             if(VerifyOfRequest.Errorexisting == true)
             {
+                if(VerifyOfRequest.ErrorDetails == "403")
+                {
+                    return Forbid();
+                }
                 return BadRequest(VerifyOfRequest.ErrorDetails);
             }
 
@@ -130,7 +134,7 @@ namespace online_store.Controllers
 
 
         [Authorize(Roles = "vendor")]
-        [HttpDelete, Route("/Products/{productId:int}")]
+        [HttpDelete, Route("Products/{productId:int}")]
         public async Task<IActionResult> DeleteProduct([FromRoute]int productId)
         {
             if (await  productRepository.IsProductExist(productId) == false)
@@ -138,12 +142,16 @@ namespace online_store.Controllers
                 return NotFound($"can't found product with id {productId}");
             }
 
-            var VerifyOfRequest = new VerifyOfRequest();
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            VerifyOfRequest = await productRepository.Deleteproduct(productId);
+            var VerifyOfRequest = await productRepository.Deleteproduct(productId , userId);
 
             if(VerifyOfRequest.Errorexisting == true)
             {
+                if (VerifyOfRequest.ErrorDetails == "403")
+                {
+                    return Forbid();
+                }
                 return BadRequest(VerifyOfRequest.ErrorDetails);
             }
 
@@ -152,7 +160,7 @@ namespace online_store.Controllers
 
         }
 
-        [HttpGet("/products-category /{categoryId:int}")]
+        [HttpGet("products-category /{categoryId:int}")]
         public async Task<IActionResult> GetProductsByCategoryID([FromRoute] int categoryId)
         {
             return Ok(await productRepository.GetProductsByCategoryID(categoryId));

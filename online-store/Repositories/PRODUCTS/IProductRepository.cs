@@ -11,8 +11,8 @@
         public Task<ProductReadDto> GetProductById(int productid);
 
         public Task<VerifyOfRequest> AddProduct(Product product , List<string>imgesUrl);
-        public Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct);
-        public Task<VerifyOfRequest> Deleteproduct(int productId);
+        public Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct, int userId);
+        public Task<VerifyOfRequest> Deleteproduct(int productId , int userId);
 
         public Task<bool> IsProductExist(int productId);
 
