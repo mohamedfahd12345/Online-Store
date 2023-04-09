@@ -23,18 +23,7 @@ namespace online_store.Controllers
         [HttpGet , Route("Products")]
         public  async Task<IActionResult> GetAllProducts()
         {
-            //return Ok(await productRepository.GetAllProducts());
-            Stopwatch stopwatch = new Stopwatch();
-
-            // Start the stopwatch
-            stopwatch.Start();
-            var ans = await productRepository.GetAllProducts();
-            stopwatch.Stop();
-
-            // Get the elapsed time in milliseconds
-            long elapsedMs = stopwatch.ElapsedMilliseconds;
-            Console.WriteLine(elapsedMs);
-            return Ok(ans);
+            return Ok(await productRepository.GetAllProducts());
         }
 
         

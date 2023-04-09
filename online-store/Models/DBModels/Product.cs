@@ -21,7 +21,7 @@ public partial class Product
 
     public int? VendorId { get; set; }
 
-    public virtual ICollection<Cart> Carts { get; } = new List<Cart>();
+    public virtual ICollection<CartItem> CartItems { get; } = new List<CartItem>();
 
     public virtual Category? Category { get; set; }
 

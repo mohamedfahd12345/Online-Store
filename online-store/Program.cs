@@ -10,6 +10,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using online_store.Repositories.category;
 using online_store.Repositories.PRODUCTS;
+using online_store.Repositories.CART;
+
 using online_store.Authentication_Services;
 using online_store.MiddleWares;
 using online_store.test;
@@ -44,8 +46,11 @@ builder.Services.AddDbContext<OnlineStoreContext>(options =>
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICartRepository,CartRepository>();
+
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<HashServices>();
+
 builder.Services.AddScoped<tempclass>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -64,13 +69,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        // builder.WithOrigins("http://example.com");    
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
 //================================= -> MIDDLEWARES <- =========================================
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.UseCors();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();

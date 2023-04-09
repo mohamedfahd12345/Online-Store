@@ -19,6 +19,8 @@ public partial class OnlineStoreContext : DbContext
 
     public virtual DbSet<Cart> Carts { get; set; }
 
+    public virtual DbSet<CartItem> CartItems { get; set; }
+
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Image> Images { get; set; }
@@ -62,16 +64,24 @@ public partial class OnlineStoreContext : DbContext
         {
             entity.ToTable("Cart");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.HasOne(d => d.User).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Cart_User");
+        });
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Carts)
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.ToTable("CartItem");
+
+            entity.HasOne(d => d.Cart).WithMany(p => p.CartItems)
+                .HasForeignKey(d => d.CartId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_CartItem_Cart");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Cart_Product2");
-
-            entity.HasOne(d => d.ProductNavigation).WithMany(p => p.Carts)
-                .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK_Cart_User");
+                .HasConstraintName("FK_CartItem_Product");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -132,10 +142,6 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.PricePerItem)
                 .HasColumnType("numeric(18, 5)")
                 .HasColumnName("price_per_item");
-
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderProducts)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK_OrderProduct_Order");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderProducts)
                 .HasForeignKey(d => d.ProductId)
