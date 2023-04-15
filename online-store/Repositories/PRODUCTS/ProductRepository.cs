@@ -7,10 +7,10 @@ namespace online_store.Repositories.PRODUCTS
     {
         private readonly OnlineStoreContext _context;
         private readonly IMapper mapper;
-        public ProductRepository(OnlineStoreContext context , IMapper mapper)
+        public ProductRepository(OnlineStoreContext context, IMapper mapper)
         {
             this._context = context;
-            this.mapper = mapper;   
+            this.mapper = mapper;
         }
 
         public async Task<List<ProductReadDto>> GetProductsWithDelegate(Func<Product, bool> condition)
@@ -47,11 +47,11 @@ namespace online_store.Repositories.PRODUCTS
         }
 
 
-        public async Task<VerifyOfRequest> AddProduct(Product product , List<string> imgesUrl)
+        public async Task<VerifyOfRequest> AddProduct(Product product, List<string> imgesUrl)
         {
             var VerifyOfRequest = new VerifyOfRequest();
 
-            var ExistCategory =await  _context.Categories.AnyAsync(x => x.CategoryId == product.CategoryId);
+            var ExistCategory = await _context.Categories.AnyAsync(x => x.CategoryId == product.CategoryId);
             if (ExistCategory == false)
             {
                 VerifyOfRequest.ErrorDetails = "This Category Does not exist ";
@@ -69,7 +69,7 @@ namespace online_store.Repositories.PRODUCTS
 
             try
             {
-                
+
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
 
@@ -94,7 +94,7 @@ namespace online_store.Repositories.PRODUCTS
 
         }
 
-        public async Task<VerifyOfRequest> Deleteproduct(int productId , int userId)
+        public async Task<VerifyOfRequest> Deleteproduct(int productId, int userId)
         {
             var VerifyOfRequest = new VerifyOfRequest();
             try
@@ -111,8 +111,8 @@ namespace online_store.Repositories.PRODUCTS
                 _context.Products.Remove(TargetProduct);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 VerifyOfRequest.ErrorDetails = ex.Message;
                 VerifyOfRequest.Errorexisting = true;
             }
@@ -124,7 +124,7 @@ namespace online_store.Repositories.PRODUCTS
             return await GetProductsWithDelegate(x => x.ProductId > 0);
         }
 
-        public async Task<ProductReadDto> GetProductById(int productid)
+        public async Task<ProductReadDto?> GetProductById(int productid)
         {
             var targetProduct = await _context.Products
             .Include(x => x.Category)
@@ -208,21 +208,21 @@ namespace online_store.Repositories.PRODUCTS
             return await GetProductsWithDelegate(x => x.CategoryId == categoryId);
         }
 
-        public async Task<List<ProductReadDto>> GetProductsByName(string name )
+        public async Task<List<ProductReadDto>> GetProductsByName(string name)
         {
 
             var productName = name.Trim().ToLower();
             return await GetProductsWithDelegate(p => p.ProductName.ToLower().Contains(productName));
-            
+
         }
 
         public async Task<bool> IsProductExist(int productId)
         {
             return await _context.Products
-                .AnyAsync(x=>x.ProductId == productId);
+                .AnyAsync(x => x.ProductId == productId);
         }
 
-        public async Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct ,int userId)
+        public async Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct, int userId)
         {
             var VerifyOfRequest = new VerifyOfRequest();
 
@@ -236,12 +236,12 @@ namespace online_store.Repositories.PRODUCTS
                 return VerifyOfRequest;
             }
 
-           
+
 
             try
             {
                 var CurrentProduct = await _context.Products.Where(x => x.ProductId == updatedProduct.ProductId).FirstOrDefaultAsync();
-                if(CurrentProduct.VendorId != userId)
+                if (CurrentProduct.VendorId != userId)
                 {
                     VerifyOfRequest.ErrorDetails = "403";
                     VerifyOfRequest.Errorexisting = true;
@@ -255,7 +255,7 @@ namespace online_store.Repositories.PRODUCTS
                 CurrentProduct.Price = updatedProduct.Price;
 
 
-                
+
 
                 var images = updatedProduct.imagesUrl
                     .Select(x => new Image
@@ -269,7 +269,7 @@ namespace online_store.Repositories.PRODUCTS
                 _context.Images.UpdateRange(images);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 VerifyOfRequest.ErrorDetails = ex.Message;
                 VerifyOfRequest.Errorexisting = true;

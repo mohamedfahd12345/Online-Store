@@ -2,6 +2,7 @@
 {
     public interface ICartRepository
     {
+        Task<CartInfoReadDTO> GetAllInCart(int customerId);
         Task<bool> AddOneToCart(int customerId, int productId);
         Task<bool> RemoveFromCart(int customerId, int productId);
         Task<bool> RmoveOneFromCart(int customerId, int productId);
