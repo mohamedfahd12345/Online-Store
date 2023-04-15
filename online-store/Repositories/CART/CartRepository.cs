@@ -196,20 +196,40 @@ namespace online_store.Repositories.CART
 
         public async Task<CartInfoReadDTO?> GetAllInCart(int customerId)
         {
-            var customCartItems = await _context.Carts
-                .Include(c => c.CartItems)
-                .ThenInclude(p => p.Product)
-                .AsSplitQuery()
+            var customCart = await GetCart(customerId);
+            if (customCart is null) return null;
+
+            var CartInfoDetails = new CartInfoReadDTO();
+
+            CartInfoDetails.cartItems = await _context.CartItems
+                .Include(p => p.Product)
                 .AsNoTracking()
-                .Where(c => c.UserId == customerId)
-                .Select(c => new CartReadDto
+                .AsSplitQuery()
+                .Where(c => c.CartId == customCart.CartId)
+                .Select(i => new CartReadDto
                 {
-                    Quantity = c.CartItems.Select(v=>v.Quantity).FirstOrDefault() ,
-                    Price  = c.CartItems.Select(p=>p.)
+                    MainImageUrl = i.Product != null ? i.Product.MainImageUrl : null ,
+                    Price = i.Product != null ? i.Product.Price : null,
+                    ProductId = i.Product != null ? i.Product.ProductId : null ,
+                    Quantity = i.Quantity  ,
+                    ProductName = i.Product != null ? i.Product.ProductName : null
+                    
                 })
                 .ToListAsync();
 
-            return null;
+
+            if (CartInfoDetails is null) return null;
+
+            CartInfoDetails.CartCount = await _context.CartItems
+                .Where(c => c.CartId == customCart.CartId)
+                .SumAsync(x => x.Quantity);
+
+            CartInfoDetails.CartTotalPrice = await _context.CartItems
+                .Include(c=>c.Product)
+                .Where(c => c.CartId == customCart.CartId)
+                .SumAsync(x => x.Quantity * (x.Product !=null ? x.Product.Price : 0));
+            
+            return CartInfoDetails;
         }
     }
 }
