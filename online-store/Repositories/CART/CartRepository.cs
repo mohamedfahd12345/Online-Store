@@ -194,14 +194,14 @@ namespace online_store.Repositories.CART
 
         }
 
-        public async Task<CartInfoReadDTO?> GetAllInCart(int customerId)
+        public async Task<List<CartReadDto>> GetCartItemsAsync(int customerId)
         {
             var customCart = await GetCart(customerId);
             if (customCart is null) return null;
 
             var CartInfoDetails = new CartInfoReadDTO();
 
-            CartInfoDetails.cartItems = await _context.CartItems
+            return await _context.CartItems
                 .Include(p => p.Product)
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -217,19 +217,27 @@ namespace online_store.Repositories.CART
                 })
                 .ToListAsync();
 
-
-            if (CartInfoDetails is null) return null;
-
-            CartInfoDetails.CartCount = await _context.CartItems
-                .Where(c => c.CartId == customCart.CartId)
-                .SumAsync(x => x.Quantity);
-
-            CartInfoDetails.CartTotalPrice = await _context.CartItems
-                .Include(c=>c.Product)
-                .Where(c => c.CartId == customCart.CartId)
-                .SumAsync(x => x.Quantity * (x.Product !=null ? x.Product.Price : 0));
-            
-            return CartInfoDetails;
         }
+
+        public async Task<int?> GetCartItemCountAsync(int customerId)
+        {
+            var customCart = await GetCart(customerId);
+            if (customCart is null) return 0;
+            return await _context.CartItems
+               .Where(c => c.CartId == customCart.CartId)
+               .SumAsync(x => x.Quantity);
+        }
+
+        public async Task<decimal?> GetCartTotalPriceAsync(int customerId)
+        {
+            var customCart = await GetCart(customerId);
+            if (customCart is null) return 0;
+            return await _context.CartItems
+                .Include(c => c.Product)
+                .Where(c => c.CartId == customCart.CartId)
+                .SumAsync(x => x.Quantity * (x.Product != null ? x.Product.Price : 0));
+        }
+
+       
     }
 }

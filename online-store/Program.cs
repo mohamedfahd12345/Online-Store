@@ -2,6 +2,7 @@ global using online_store.Models;
 global using Microsoft.EntityFrameworkCore;
 global using online_store.DTOs;
 global using online_store.Helper;
+global using Microsoft.AspNetCore.Authorization;
 using online_store.Repositories.Auth;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
