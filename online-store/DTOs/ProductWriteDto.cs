@@ -9,9 +9,11 @@ namespace online_store.DTOs
         public string? Description { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue , ErrorMessage = "The price must be at least 1.")]
         public decimal? Price { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue , ErrorMessage = "The quantity must be at least 1.")]
         public int? Quantity { get; set; }
 
         [Required]

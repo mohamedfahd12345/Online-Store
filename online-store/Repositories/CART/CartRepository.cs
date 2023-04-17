@@ -29,10 +29,12 @@ namespace online_store.Repositories.CART
 
         public async Task<bool> AddOneToCart(int customerId, int productId)
         {
-            if (await _ProductRepository.GetProductById(productId) is null)
+            var product = await _ProductRepository.GetProductById(productId);
+            if (product is null)
             {
                 return false;
             }
+
 
             var customerCart = await GetCart(customerId);
             if (customerCart is null)
@@ -66,14 +68,17 @@ namespace online_store.Repositories.CART
                 };
                 await _context.CartItems.AddAsync(cartItem);
                 await _context.SaveChangesAsync();
-
+                return true;
             }
-            else
+            customerCartItem.Quantity++;
+            if (customerCartItem.Quantity   > product.Quantity)
             {
-                customerCartItem.Quantity++;
-                _context.CartItems.Update(customerCartItem);
-                await _context.SaveChangesAsync();
+                customerCartItem.Quantity = product.Quantity;
             }
+ 
+            _context.CartItems.Update(customerCartItem);
+            await _context.SaveChangesAsync();
+            
 
             return true;
 

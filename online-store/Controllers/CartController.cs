@@ -27,7 +27,7 @@ public class CartController : ControllerBase
     public async Task<IActionResult> GetCartItemCount()
     {
         int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        return Ok(await _cartRepository.GetCartItemsAsync(userId));
+        return Ok(await _cartRepository.GetCartItemCountAsync(userId));
     }
 
 
@@ -67,7 +67,7 @@ public class CartController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("item/{productId:int}")]
+    [HttpDelete("one-item/{productId:int}")]
     public async Task<IActionResult> DeleteOneCartItem([FromRoute] int productId)
     {
         int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
