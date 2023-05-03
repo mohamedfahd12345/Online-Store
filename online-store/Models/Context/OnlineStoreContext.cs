@@ -48,7 +48,12 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.City)
                 .HasMaxLength(150)
                 .HasColumnName("city");
-            entity.Property(e => e.HomeNumber).HasColumnName("Home_Number");
+            entity.Property(e => e.Country)
+                .HasMaxLength(50)
+                .HasColumnName("country");
+            entity.Property(e => e.State)
+                .HasMaxLength(50)
+                .HasColumnName("state");
             entity.Property(e => e.StreetAddress)
                 .HasMaxLength(200)
                 .HasColumnName("street_address");
@@ -107,19 +112,13 @@ public partial class OnlineStoreContext : DbContext
             entity.ToTable("Order");
 
             entity.Property(e => e.AdderssId).HasColumnName("Adderss_ID");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.DeliveryCost)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("delivery_cost");
             entity.Property(e => e.OrderStatus)
                 .HasMaxLength(50)
                 .HasColumnName("Order_Status");
             entity.Property(e => e.PaymentMethod).HasMaxLength(150);
-            entity.Property(e => e.ShippedDate).HasColumnName("shipped_date");
-            entity.Property(e => e.TotatlPrice).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.TotatlPriceForProducts)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("TotatlPrice_for_products");
+            entity.Property(e => e.PhoneNumber).HasMaxLength(50);
+            entity.Property(e => e.ShippingCost).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
 
             entity.HasOne(d => d.Adderss).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.AdderssId)
@@ -136,9 +135,6 @@ public partial class OnlineStoreContext : DbContext
             entity.ToTable("OrderProduct");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Price)
-                .HasColumnType("numeric(18, 5)")
-                .HasColumnName("price");
             entity.Property(e => e.PricePerItem)
                 .HasColumnType("numeric(18, 5)")
                 .HasColumnName("price_per_item");
@@ -204,11 +200,6 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.PhoneNumber).HasMaxLength(50);
             entity.Property(e => e.Role).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(200);
-
-            entity.HasOne(d => d.Address).WithMany(p => p.Users)
-                .HasForeignKey(d => d.AddressId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_User_Address");
         });
 
         OnModelCreatingPartial(modelBuilder);

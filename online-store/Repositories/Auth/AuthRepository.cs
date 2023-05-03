@@ -22,13 +22,6 @@ namespace online_store.Repositories.Auth
         {
             var VerifyOfRequest = new VerifyOfRequest();
 
-            if (!customerDTO.Email.Contains("@") || !customerDTO.Email.EndsWith(".com"))
-            {
-                VerifyOfRequest.Errorexisting = true;
-                VerifyOfRequest.ErrorDetails = "Invaild Email";
-                return VerifyOfRequest;
-            }
-
             var EmailExistingBefore = await _context.Users.Where(x => x.Email == customerDTO.Email)
                 .Select(x => x.UserId).FirstOrDefaultAsync();
 
@@ -42,13 +35,9 @@ namespace online_store.Repositories.Auth
 
             var Customer = new User();
            
-            var UserAddress = new Address();
-           
             // <wonna be returned > (source )
             Customer = mapper.Map<User>(customerDTO);
-            UserAddress = mapper.Map<Address>(customerDTO);
-            
-
+           
             Customer.Role = Role;
 
             byte[] passwordHash;
@@ -62,15 +51,7 @@ namespace online_store.Repositories.Auth
                 Customer.PasswordSalt = passwordSalt;
 
                
-                await _context.Addresses.AddAsync(UserAddress);
-                await _context.SaveChangesAsync();
-
-
-                int AddressIdInDb = UserAddress.AddressId;
-
-
-                Customer.AddressId = AddressIdInDb;
-                
+               
 
                 await _context.Users.AddAsync(Customer);
                 await _context.SaveChangesAsync();
@@ -86,15 +67,18 @@ namespace online_store.Repositories.Auth
         }
 
         
-
-         
-
         public async Task<User> GetUser(string email)
         {
             var targetUser = await _context.Users
                 .Where(x => x.Email == email)
                 .FirstOrDefaultAsync();
             return targetUser;
+        }
+        public async Task<bool> IsUserExist(int userId)
+        {
+            return await _context.Users
+            .Where(u => u.UserId == userId)
+            .AnyAsync();
         }
     }
 }

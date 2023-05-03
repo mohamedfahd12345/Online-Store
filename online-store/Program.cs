@@ -16,6 +16,7 @@ using online_store.Repositories.CART;
 using online_store.Authentication_Services;
 using online_store.MiddleWares;
 using online_store.test;
+using online_store.Repositories.ORDER;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICartRepository,CartRepository>();
+builder.Services.AddScoped<IOrderRepository,OrderRepository>();
 
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<HashServices>();

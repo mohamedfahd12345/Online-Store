@@ -27,6 +27,9 @@ namespace online_store.AutoMapper
             CreateMap<Product, ProductReadDto>();
             CreateMap<ProductReadDto, Product>();
 
+            CreateMap<Address, CheckoutDto>();
+            CreateMap<CheckoutDto, Address>();
+
 
 
         }

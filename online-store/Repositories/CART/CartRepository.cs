@@ -27,6 +27,14 @@ namespace online_store.Repositories.CART
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Cart?> GetFullCart(int customerId)
+        {
+            return await _context.Carts
+            .Where(c => c.UserId == customerId)
+            .Include(c => c.CartItems)
+            .ThenInclude(p => p.Product)
+            .FirstOrDefaultAsync();
+        }
         public async Task<bool> AddOneToCart(int customerId, int productId)
         {
             var product = await _ProductRepository.GetProductById(productId);

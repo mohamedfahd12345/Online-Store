@@ -15,11 +15,9 @@ public partial class Address
 
     public string? ZipCode { get; set; }
 
-    public string? HomeNumber { get; set; }
+    public string? Country { get; set; }
 
-    public string? ApartmentNumber { get; set; }
+    public string? State { get; set; }
 
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
-
-    public virtual ICollection<User> Users { get; } = new List<User>();
 }

@@ -17,11 +17,7 @@ public partial class User
 
     public byte[]? PasswordSalt { get; set; }
 
-    public int? AddressId { get; set; }
-
     public string? Role { get; set; }
-
-    public virtual Address? Address { get; set; }
 
     public virtual ICollection<Cart> Carts { get; } = new List<Cart>();
 

@@ -9,7 +9,7 @@ public partial class Order
 
     public int? CustomerId { get; set; }
 
-    public decimal? TotatlPrice { get; set; }
+    public decimal? TotalAmount { get; set; }
 
     public int? AdderssId { get; set; }
 
@@ -17,13 +17,15 @@ public partial class Order
 
     public string? PaymentMethod { get; set; }
 
+    public DateTime? OrderDate { get; set; }
+
     public DateTime? ShippedDate { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public decimal? ShippingCost { get; set; }
 
-    public decimal? DeliveryCost { get; set; }
+    public DateTime? DeliveredDate { get; set; }
 
-    public decimal? TotatlPriceForProducts { get; set; }
+    public string? PhoneNumber { get; set; }
 
     public virtual Address? Adderss { get; set; }
 

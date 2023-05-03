@@ -13,5 +13,6 @@ public interface ICartRepository
     Task<int?> GetCartItemCountAsync(int customerId);
     Task<decimal?> GetCartTotalPriceAsync(int customerId);
 
+    Task<Cart?> GetFullCart(int customerId); 
 
 }
