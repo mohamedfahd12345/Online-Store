@@ -26,3 +26,20 @@
   <li>Run the application using your IDE Or open the project on your terminal then run this command "dotnet run".</li>
   
 </ol>
+
+<h2>Packages</h2>
+<pre class="notranslate" style="position: relative;"><code>  AutoMapper
+  AutoMapper.Extensions.Microsoft.DependencyInjection
+  NLog.Web.AspNetCore
+  Microsoft.AspNetCore.Authentication.JwtBearer
+  Microsoft.AspNetCore.Mvc.NewtonsoftJson
+  Microsoft.AspNetCore.Mvc.Versioning
+  Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer
+  Microsoft.AspNetCore.JsonPatch
+  Microsoft.EntityFrameworkCore
+  Microsoft.EntityFrameworkCore.SqlServer
+  Microsoft.EntityFrameworkCore.Tools
+  Swashbuckle.AspNetCore 
+  Swashbuckle.AspNetCore.Annotations
+  Swashbuckle.AspNetCore.Newtonsoft
+</code><div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
