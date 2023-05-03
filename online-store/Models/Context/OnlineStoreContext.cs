@@ -143,6 +143,10 @@ public partial class OnlineStoreContext : DbContext
                 .HasColumnType("numeric(18, 5)")
                 .HasColumnName("price_per_item");
 
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderProducts)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK_OrderProduct_Order");
+
             entity.HasOne(d => d.Product).WithMany(p => p.OrderProducts)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Cascade)
