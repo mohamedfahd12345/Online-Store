@@ -4,12 +4,17 @@
 <br/>
 <h2>Technologies used :</h2>
 1.C#  <br>
-2.ASP.NET Web APIs.<br>
-3.ASP .NET CORE <br>
-4.Entity Framework Core  <br>
-5.microsoft sql server  <br>
+2.ASP.NET Web API .NET6.<br>
+3.Swagger UI (Documenting the application).
+4.Entity Framework Core (Database First Approach). <br>
+5.microsoft sql server  2019.<br>
+6.Postman.
 
 
 <h2>How to run?</h2>
-1.Download the files <br>
-2.Open it in your terminal then run "dotnet run"
+To use the Online-Store Web API, you must have the following prerequisites installed:
+<ul>
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</ul>
