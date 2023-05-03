@@ -5,7 +5,7 @@
 <h2>Technologies used :</h2>
 1.C#  <br>
 2.ASP.NET Web API .NET6.<br>
-3.Swagger UI (Documenting the application).
+3.Swagger UI (Documenting the application).  <br>
 4.Entity Framework Core (Database First Approach). <br>
 5.microsoft sql server  2019.<br>
 6.Postman.
