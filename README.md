@@ -12,9 +12,15 @@
 
 
 <h2>How to run?</h2>
-To use the Online-Store Web API, you must have the following prerequisites installed:
+To run the Online-Store Web API, you must have the following prerequisites installed:
 <ul>
-  <li>Item 1</li>
-  <li>Item 2</li>
-  <li>Item 3</li>
+  <li>.NET Core SDK version 6 </li>
+  <li>MS SQL Server or SQL Server Express</li>
+  <li>A text editor or integrated development environment (IDE) such as Visual Studio Code</li>
 </ul>
+To get started, follow these steps:
+<ol>
+  <li>Clone the repository to your local machine.</li>
+  <li>Open the solution file online-store.sln in your preferred IDE or text editor.</li>
+  <li>Update the database connection string in the appsettings.json file with your MS SQL Server connection string.</li>
+</ol>
