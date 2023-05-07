@@ -3,7 +3,7 @@
 public interface IOrderRepository
 {
     Task<ResponseDetails> CheckoutAsync(int customerId , CheckoutDto checkoutDto);
-    Task<List<OrderReadDto>> GetAllOrders(int customerId);  
+    Task<List<OrderReadDto>?> GetAllOrders(int customerId);  
 
-    Task<OrderDetailsReadDto> GetOrderDetail(int customerId , int orderId);
+    Task<OrderDetailsReadDto?> GetOrderDetails(int customerId , int orderId);
 }

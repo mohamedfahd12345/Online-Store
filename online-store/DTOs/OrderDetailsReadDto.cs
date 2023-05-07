@@ -21,4 +21,21 @@ public class OrderDetailsReadDto
     public DateTime? DeliveredDate { get; set; }
 
 
+    //
+    public int AddressId { get; set; }
+
+    public string? StreetNumber { get; set; }
+
+    public string? StreetAddress { get; set; }
+
+    public string? City { get; set; }
+
+    public string? ZipCode { get; set; }
+
+    public string? Country { get; set; }
+
+    public string? State { get; set; }
+
+    public List<CartReadDto> orderProducts  { get; set; }  = new List<CartReadDto>() ;
+
 }

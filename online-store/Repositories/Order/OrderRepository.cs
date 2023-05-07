@@ -73,8 +73,8 @@ public class OrderRepository : IOrderRepository
            CustomerId = customerId ,
            PhoneNumber  = checkoutDto.PhoneNumber ,
            ShippingCost = shippingCost,
-           AdderssId = Address.AddressId
-
+           AdderssId = Address.AddressId 
+           
         };
 
         order.TotalAmount = cartExists.CartItems
@@ -89,19 +89,23 @@ public class OrderRepository : IOrderRepository
                 {
                     ProductId = ci.ProductId,
                     Quantity = ci.Quantity,
-                    PricePerItem = ci.Product.Price,
+                    PricePerItem = ci.Product.Price ,
                     OrderId = order.OrderId
                 }
             ).ToList();
 
+       
         await _context.OrderProducts.AddRangeAsync(orderItems);
+
+        await cartRepository.DeleteAsync(cartExists);
+
         await _context.SaveChangesAsync();
 
 
         return GenerateResponseDetails(201, "created successfully");
     }
 
-    public async Task<List<OrderReadDto>> GetAllOrders(int customerId)
+    public async Task<List<OrderReadDto>?> GetAllOrders(int customerId)
     {
        var targetUser = await authRepository.IsUserExist(customerId);
         if (!targetUser)
@@ -122,7 +126,7 @@ public class OrderRepository : IOrderRepository
 
     }
 
-    public async Task<OrderDetailsReadDto> GetOrderDetail(int customerId, int orderId)
+    public async Task<OrderDetailsReadDto?> GetOrderDetails(int customerId, int orderId)
     {
         var targetUser = await authRepository.IsUserExist(customerId);
         if (!targetUser)
@@ -131,17 +135,57 @@ public class OrderRepository : IOrderRepository
         }
 
         var targetOrder = await _context.Orders
+            .Include(a => a.Adderss)
+            .Include(o => o.OrderProducts)
+            .ThenInclude(p=>p.Product)
+            .AsSplitQuery()
+            .AsNoTracking()
             .Where(o => o.OrderId == orderId)
-            .Select(or => new 
-            {
-                or.OrderId ,
-                or.CustomerId ,
-                or.OrderStatus ,
-                or.DeliveredDate
-            })
             .FirstOrDefaultAsync();
 
-        throw new Exception();
+        if (targetOrder == null || targetOrder.CustomerId != customerId)
+        {
+            return null;
+        }
+
+        return MappingOrderToOrderDto(targetOrder);
 
     }
+
+    public OrderDetailsReadDto MappingOrderToOrderDto(Order order)
+    {
+        var orderDetails = new OrderDetailsReadDto();
+
+        orderDetails.AddressId = order.Adderss.AddressId;
+        orderDetails.StreetAddress = order.Adderss.StreetAddress;
+        orderDetails.StreetNumber = order.Adderss.StreetNumber;
+        orderDetails.State = order.Adderss.State;
+        orderDetails.City = order.Adderss.City;
+        orderDetails.Country = order.Adderss.Country;
+        orderDetails.ZipCode = order.Adderss.ZipCode;
+
+        orderDetails.OrderId = order.OrderId;
+        orderDetails.OrderStatus = order.OrderStatus;
+        orderDetails.PhoneNumber = order.PhoneNumber;
+        orderDetails.ShippedDate = order.ShippedDate;
+        orderDetails.ShippingCost = order.ShippingCost;
+        orderDetails.OrderDate = order.OrderDate;
+        orderDetails.DeliveredDate = order.DeliveredDate;
+        orderDetails.TotalAmount = order.TotalAmount;
+        orderDetails.PaymentMethod = order.PaymentMethod;
+
+        orderDetails.orderProducts = order.OrderProducts
+                                                        .Select(o => new CartReadDto
+                                                        {
+                                                            Price = o.PricePerItem,
+                                                            ProductId = o.ProductId,
+                                                            Quantity = o.Quantity,
+                                                            MainImageUrl = o.Product.MainImageUrl,
+                                                            ProductName = o.Product.ProductName
+                                                        }).ToList();
+        return orderDetails;
+    }
+
+
+
 }

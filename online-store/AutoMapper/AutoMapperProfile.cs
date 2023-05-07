@@ -31,7 +31,6 @@ namespace online_store.AutoMapper
             CreateMap<CheckoutDto, Address>();
 
 
-
         }
     }
 }

@@ -35,6 +35,6 @@ public class OrdersController : ControllerBase
     public async Task<IActionResult> GetOrderDetils([FromRoute]int orderId)
     {
         int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        return Ok(await _orderRepository.GetOrderDetail(userId , orderId));
+        return Ok(await _orderRepository.GetOrderDetails(userId , orderId));
     }
 }

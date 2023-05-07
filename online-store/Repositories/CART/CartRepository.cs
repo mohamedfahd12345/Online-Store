@@ -26,7 +26,12 @@ namespace online_store.Repositories.CART
                 .Where(c => c.ProductId == productId && c.CartId == cartId)
                 .FirstOrDefaultAsync();
         }
+        public async Task DeleteAsync(Cart cart)
+        {
+            _context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
 
+        }
         public async Task<Cart?> GetFullCart(int customerId)
         {
             return await _context.Carts
