@@ -86,3 +86,12 @@ F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Microsoft.
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Scrutor.dll
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.dll
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.AspNetCore.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.Extensions.Hosting.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.Extensions.Logging.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.Formatting.Compact.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.Settings.Configuration.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.Sinks.Console.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.Sinks.Debug.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Serilog.Sinks.File.dll

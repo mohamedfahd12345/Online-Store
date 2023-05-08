@@ -17,6 +17,7 @@ using online_store.Authentication_Services;
 using online_store.MiddleWares;
 using online_store.test;
 using online_store.Repositories.ORDER;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,15 @@ builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
 
 builder.Services.AddEndpointsApiExplorer();
+
+//Serilog
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+{
+
+    loggerConfiguration
+    .ReadFrom.Configuration(context.Configuration) //read configuration settings from built-in IConfiguration
+    .ReadFrom.Services(services); //read out current app's services and make them available to serilog
+});
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -83,7 +93,7 @@ builder.Services.AddCors(options =>
 
 //================================= -> MIDDLEWARES <- =========================================
 var app = builder.Build();
-
+//app.UseSerilogRequestLogging();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors();
