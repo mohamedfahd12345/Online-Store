@@ -15,7 +15,7 @@ using online_store.Repositories.CART;
 
 using online_store.Authentication_Services;
 using online_store.MiddleWares;
-using online_store.test;
+
 using online_store.Repositories.ORDER;
 using Serilog;
 
@@ -28,13 +28,13 @@ builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 
 //Serilog
-builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+/*builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
 {
 
     loggerConfiguration
     .ReadFrom.Configuration(context.Configuration) //read configuration settings from built-in IConfiguration
     .ReadFrom.Services(services); //read out current app's services and make them available to serilog
-});
+});*/
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -64,7 +64,6 @@ builder.Services.AddScoped<IOrderRepository,OrderRepository>();
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<HashServices>();
 
-builder.Services.AddScoped<tempclass>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -75,7 +74,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+                .GetBytes(builder.Configuration.GetSection("JwtSettings:SecretKey").Value)),
             ValidateIssuer = false,
             ValidateAudience = false,
             ClockSkew = TimeSpan.Zero

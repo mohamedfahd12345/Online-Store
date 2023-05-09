@@ -2,7 +2,7 @@
 using online_store.Models;
 namespace online_store.DTOs;
 
-public class ProductReadDto
+public class ProductsReadDto 
 {
 
     public string? Description { get; set; }
@@ -23,7 +23,7 @@ public class ProductReadDto
     public int? VendorId { get; set; } 
     public int ProductId { get; set; }
     public string? Category { get; set; }
-    public List<ImageDto> imagesUrl { get; set; } = new List<ImageDto>();
+    
 
     
       

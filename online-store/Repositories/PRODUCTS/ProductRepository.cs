@@ -13,16 +13,15 @@ namespace online_store.Repositories.PRODUCTS
             this.mapper = mapper;
         }
 
-        public async Task<List<ProductReadDto>> GetProductsWithDelegate(Func<Product, bool> condition)
+        public async Task<List<ProductsReadDto>> GetProductsWithDelegate(Func<Product, bool> condition)
         {
 
-            List<ProductReadDto> products = _context.Products
+            List<ProductsReadDto> products = _context.Products
                 .Include(x => x.Category)
-                .Include(x => x.Images)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .Where(condition)
-                .Select(p => new ProductReadDto
+                .Select(p => new ProductsReadDto
                 {
                     ProductId = p.ProductId,
                     Quantity = p.Quantity,
@@ -32,14 +31,8 @@ namespace online_store.Repositories.PRODUCTS
                     MainImageUrl = p.MainImageUrl,
                     Price = p.Price,
                     Category = p.Category != null ? p.Category.CategoryName : null,
-                    CategoryId = p.CategoryId,
-                    imagesUrl = p.Images
-                                    .Select(x => new ImageDto
-                                    {
-                                        ImageUrl = x.ImageUrl,
-                                        ProductId = x.ProductId,
-                                        ImageId = x.Id
-                                    }).ToList()
+                    CategoryId = p.CategoryId
+                    
                 })
                 .ToList();
 
@@ -69,7 +62,7 @@ namespace online_store.Repositories.PRODUCTS
 
             try
             {
-
+                
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
 
@@ -119,12 +112,12 @@ namespace online_store.Repositories.PRODUCTS
             return VerifyOfRequest;
         }
 
-        public async Task<List<ProductReadDto>> GetAllProducts()
+        public async Task<List<ProductsReadDto>> GetAllProducts()
         {
             return await GetProductsWithDelegate(x => x.ProductId > 0);
         }
 
-        public async Task<ProductReadDto?> GetProductById(int productid)
+        public async Task<OneProductReadDto?> GetProductById(int productid)
         {
             var targetProduct = await _context.Products
             .Include(x => x.Category)
@@ -132,7 +125,7 @@ namespace online_store.Repositories.PRODUCTS
             .AsSplitQuery()
             .AsNoTracking()
             .Where(x => x.ProductId == productid)
-            .Select(p => new ProductReadDto
+            .Select(p => new OneProductReadDto
             {
                 ProductId = p.ProductId,
                 Quantity = p.Quantity,
@@ -156,7 +149,7 @@ namespace online_store.Repositories.PRODUCTS
 
         }
 
-        public async Task<List<ProductReadDto>> GetProducts(int productsPerPage, int pageNumber)
+        public async Task<List<ProductsReadDto>> GetProducts(int productsPerPage, int pageNumber)
         {
             if (productsPerPage < 1 || pageNumber < 1)
                 return null;
@@ -170,12 +163,11 @@ namespace online_store.Repositories.PRODUCTS
             }
 
 
-            List<ProductReadDto> products = await _context.Products
+            List<ProductsReadDto> products = await _context.Products
                 .Include(x => x.Category)
-                .Include(x => x.Images)
                 .AsSplitQuery()
                 .AsNoTracking()
-                .Select(p => new ProductReadDto
+                .Select(p => new ProductsReadDto
                 {
                     ProductId = p.ProductId,
                     Quantity = p.Quantity,
@@ -185,14 +177,8 @@ namespace online_store.Repositories.PRODUCTS
                     MainImageUrl = p.MainImageUrl,
                     Price = p.Price,
                     Category = p.Category != null ? p.Category.CategoryName : null,
-                    CategoryId = p.CategoryId,
-                    imagesUrl = p.Images
-                                    .Select(x => new ImageDto
-                                    {
-                                        ImageUrl = x.ImageUrl,
-                                        ProductId = x.ProductId,
-                                        ImageId = x.Id
-                                    }).ToList()
+                    CategoryId = p.CategoryId
+                  
                 })
                 .OrderBy(x => x.ProductId)
                 .Skip(skip)
@@ -203,12 +189,12 @@ namespace online_store.Repositories.PRODUCTS
 
         }
 
-        public async Task<List<ProductReadDto>> GetProductsByCategoryID(int categoryId)
+        public async Task<List<ProductsReadDto>> GetProductsByCategoryID(int categoryId)
         {
             return await GetProductsWithDelegate(x => x.CategoryId == categoryId);
         }
 
-        public async Task<List<ProductReadDto>> GetProductsByName(string name)
+        public async Task<List<ProductsReadDto>> GetProductsByName(string name)
         {
 
             var productName = name.Trim().ToLower();
@@ -222,7 +208,7 @@ namespace online_store.Repositories.PRODUCTS
                 .AnyAsync(x => x.ProductId == productId);
         }
 
-        public async Task<VerifyOfRequest> UpdateProduct(ProductReadDto updatedProduct, int userId)
+        public async Task<VerifyOfRequest> UpdateProduct(OneProductReadDto updatedProduct, int userId)
         {
             var VerifyOfRequest = new VerifyOfRequest();
 

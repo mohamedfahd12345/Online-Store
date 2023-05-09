@@ -94,11 +94,11 @@ namespace online_store.Controllers
 
         [Authorize(Roles = "vendor")]
         [HttpPut, Route("Products/{productId:int}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute]int productId ,[FromBody] ProductReadDto updatedProduct)
+        public async Task<IActionResult> UpdateProduct([FromRoute]int productId ,[FromBody] OneProductReadDto updatedProduct)
         {
             if(updatedProduct.ProductId != productId)
             {
-                return BadRequest("id in object doesn't match with id in Parameters");
+                return BadRequest(new {error =  "id in object doesn't match with id in Parameters" });
             }
             if(await  productRepository.IsProductExist(productId) == false)
             {

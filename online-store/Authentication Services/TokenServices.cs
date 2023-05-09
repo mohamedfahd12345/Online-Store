@@ -43,15 +43,17 @@ namespace online_store.Authentication_Services
                 claims.Add(new Claim(ClaimTypes.Role, "user"));
               
             }
+            
+            var expirationSeconds = int.Parse(_configuration.GetSection("JwtSettings:ExpirationSeconds").Value);
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value));
+                _configuration.GetSection("JwtSettings:SecretKey").Value));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddSeconds(expirationSeconds),
                 signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

@@ -24,8 +24,7 @@ namespace online_store.AutoMapper
             CreateMap<ProductWriteDto, Product>();
             CreateMap<Product, ProductWriteDto>();
 
-            CreateMap<Product, ProductReadDto>();
-            CreateMap<ProductReadDto, Product>();
+  
 
             CreateMap<Address, CheckoutDto>();
             CreateMap<CheckoutDto, Address>();

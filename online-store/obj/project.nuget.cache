@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "dOE+a1w/+PugSgj84d/ih8u5I1lGeaCThU2oLin0JATRyrgJ8ZKr7gEUnHHBZWPp6nDEdtOCvFdRaa1w5JAswg==",
+  "dgSpecHash": "TLudz1wVyG/au7WwvqgVmYakA8tddEyjtNnvWpyPx9dYvdMmAQWkezFHwUwRmcFbhHL6wSmHiJ0k+4NeUrO/dw==",
   "success": true,
   "projectFilePath": "F:\\Product Review Analysis\\online-store\\online-store\\online-store.csproj",
   "expectedPackageFiles": [
@@ -97,7 +97,11 @@
     "C:\\Users\\wa3d\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512",
     "C:\\Users\\wa3d\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
     "C:\\Users\\wa3d\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\wa3d\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512"
+    "C:\\Users\\wa3d\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
+    "C:\\Users\\wa3d\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.15\\microsoft.netcore.app.ref.6.0.15.nupkg.sha512",
+    "C:\\Users\\wa3d\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.15\\microsoft.windowsdesktop.app.ref.6.0.15.nupkg.sha512",
+    "C:\\Users\\wa3d\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.15\\microsoft.aspnetcore.app.ref.6.0.15.nupkg.sha512",
+    "C:\\Users\\wa3d\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.15\\microsoft.netcore.app.host.win-x64.6.0.15.nupkg.sha512"
   ],
   "logs": []
 }
