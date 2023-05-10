@@ -3,12 +3,15 @@
 <p> A RESTful API for an online store that mimics Amazon (website).</p>
 <br/>
 <h2>Technologies used :</h2>
-1.C#  <br>
-2.ASP.NET Web API .NET6.<br>
-3.Swagger UI (Documenting the application).  <br>
-4.Entity Framework Core (Database First Approach). <br>
-5.microsoft sql server  2019.<br>
-6.Postman.
+1. C#  <br>
+2. ASP.NET Web API .NET6.<br>
+3. Redis. <br>
+4. Supabase storage (cloud storage) to upload images. <br>
+5. Swagger UI (Documenting the application).  <br>
+6. Entity Framework Core (Database First Approach). <br>
+7. microsoft sql server  2019.<br>
+8. Docker for running Redis.<br>
+9. Postman.
 
 
 <h2>Running the API Locally</h2>
@@ -16,6 +19,7 @@
 <ul>
   <li>.NET Core SDK version 6 </li>
   <li>MS SQL Server or SQL Server Express</li>
+  <li>Docker for running Redis</li>
   <li>A text editor or integrated development environment (IDE) such as Visual Studio Code</li>
 </ul>
 - To get started, follow these steps:
@@ -35,6 +39,11 @@
   Microsoft.EntityFrameworkCore
   Microsoft.EntityFrameworkCore.SqlServer
   Microsoft.EntityFrameworkCore.Tools
+  Microsoft.Extensions.Caching.StackExchangeRedis
   Swashbuckle.AspNetCore 
   Swashbuckle.AspNetCore.Filters
+  Serilog
+  Serilog.AspNetCore
+  supabase-csharp
+  supabase-storage-csharp
 </code><div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
