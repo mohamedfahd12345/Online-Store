@@ -3,6 +3,8 @@ global using Microsoft.EntityFrameworkCore;
 global using online_store.DTOs;
 global using online_store.Helper;
 global using Microsoft.AspNetCore.Authorization;
+global using online_store.Services.CachingServices;
+
 using online_store.Repositories.Auth;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,7 +56,11 @@ var connetionString = builder.Configuration.GetSection("ConnectionStrings:MyData
 builder.Services.AddDbContext<OnlineStoreContext>(options =>
     options.UseSqlServer(connetionString)
 );
-
+string redisConnectionStrings = builder.Configuration.GetSection("Redis").Value;
+builder.Services.AddStackExchangeRedisCache(redisOptions => {
+    
+    redisOptions.Configuration = redisConnectionStrings;
+});
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -64,7 +70,7 @@ builder.Services.AddScoped<IOrderRepository,OrderRepository>();
 
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<HashServices>();
-
+builder.Services.AddSingleton<ICacheService,CacheService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

@@ -38,7 +38,7 @@ public class ProductsImages : ControllerBase
           await _clinet.Storage.From("Products").Upload(
             memoryStream.ToArray(),
             imagePath);
-        var imageUrl = _clinet.Storage.From("Products").GetPublicUrl("mo.jpg");
+        var imageUrl = _clinet.Storage.From("Products").GetPublicUrl(imagePath);
 
         return Ok(imageUrl);
         

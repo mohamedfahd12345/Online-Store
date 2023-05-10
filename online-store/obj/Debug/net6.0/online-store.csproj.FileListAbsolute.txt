@@ -106,3 +106,14 @@ F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Supabase.d
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Storage.dll
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\System.Reactive.dll
 F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Websocket.Client.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\FirebaseAuth.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Firebase.Storage.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\jose-jwt.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\System.Net.Http.Formatting.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\Pipelines.Sockets.Unofficial.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\StackExchange.Redis.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\System.Diagnostics.PerformanceCounter.dll
+F:\Product Review Analysis\online-store\online-store\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.0\System.Diagnostics.PerformanceCounter.dll

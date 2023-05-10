@@ -6,15 +6,30 @@ namespace online_store.Repositories.PRODUCTS
     public class ProductRepository : IProductRepository
     {
         private readonly OnlineStoreContext _context;
+        private readonly ICacheService _cacheService;
         private readonly IMapper mapper;
-        public ProductRepository(OnlineStoreContext context, IMapper mapper)
+        public ProductRepository(OnlineStoreContext context, ICacheService cacheService , IMapper mapper)
         {
             this._context = context;
+            _cacheService = cacheService;
             this.mapper = mapper;
         }
 
-        public async Task<List<ProductsReadDto>> GetProductsWithDelegate(Func<Product, bool> condition)
+        /*private async Task RemoveProductsCachingAsync()
         {
+            await _cacheService.RemoveAsync("Products");
+        }*/
+
+        public async Task<List<ProductsReadDto>> GetProductsWithDelegate(Func<Product, bool> condition, string cacheKey)
+        {
+            var productResponse = await _cacheService
+               .GetAsync<List<ProductsReadDto>>(cacheKey);
+
+            if (productResponse is not null)
+            {
+                return productResponse;
+            }
+
 
             List<ProductsReadDto> products = _context.Products
                 .Include(x => x.Category)
@@ -36,6 +51,9 @@ namespace online_store.Repositories.PRODUCTS
                 })
                 .ToList();
 
+            await _cacheService.SetAsync<List<ProductsReadDto>>(cacheKey, products);
+           
+         
             return products;
         }
 
@@ -75,6 +93,7 @@ namespace online_store.Repositories.PRODUCTS
                 await _context.Images
                     .AddRangeAsync(ImagesUrl);
                 await _context.SaveChangesAsync();
+               
             }
             catch (Exception ex)
             {
@@ -114,7 +133,7 @@ namespace online_store.Repositories.PRODUCTS
 
         public async Task<List<ProductsReadDto>> GetAllProducts()
         {
-            return await GetProductsWithDelegate(x => x.ProductId > 0);
+            return await GetProductsWithDelegate(x => x.ProductId > 0 , "Products");
         }
 
         public async Task<OneProductReadDto?> GetProductById(int productid)
@@ -191,14 +210,15 @@ namespace online_store.Repositories.PRODUCTS
 
         public async Task<List<ProductsReadDto>> GetProductsByCategoryID(int categoryId)
         {
-            return await GetProductsWithDelegate(x => x.CategoryId == categoryId);
+            string CategoryID = categoryId.ToString();
+            return await GetProductsWithDelegate(x => x.CategoryId == categoryId , $"ProductsWithCategoryId{CategoryID}");
         }
 
         public async Task<List<ProductsReadDto>> GetProductsByName(string name)
         {
 
             var productName = name.Trim().ToLower();
-            return await GetProductsWithDelegate(p => p.ProductName.ToLower().Contains(productName));
+            return await GetProductsWithDelegate(p => p.ProductName.ToLower().Contains(productName),$"ProductsWithName{productName}" );
 
         }
 
@@ -244,7 +264,7 @@ namespace online_store.Repositories.PRODUCTS
                 CurrentProduct.Quantity = updatedProduct.Quantity;
                 CurrentProduct.Price = updatedProduct.Price;
 
-                //await _context.Images.RemoveRange(CurrentProduct.Images);
+                
                 CurrentProduct.Images.Clear();
 
 
@@ -265,17 +285,6 @@ namespace online_store.Repositories.PRODUCTS
                 await _context.SaveChangesAsync(); 
 
 
-                /*  var images = updatedProduct.imagesUrl
-                      .Select(x => new Image
-                      {
-                          Id = x.ImageId,
-                          ImageUrl = x.ImageUrl,
-                          ProductId = x.ProductId
-                      }).ToList();
-
-                  _context.Products.Update(CurrentProduct);
-                  _context.Images.UpdateRange(images);
-                  await _context.SaveChangesAsync();*/
             }
             catch (Exception ex)
             {
