@@ -18,6 +18,7 @@ using online_store.MiddleWares;
 
 using online_store.Repositories.ORDER;
 using Serilog;
+using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +82,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
@@ -89,6 +92,19 @@ builder.Services.AddCors(options =>
         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
+var SupabaseUrl = builder.Configuration["SUPABASE_URL"];
+var SupabaseKey = builder.Configuration["SUPABASE_KEY"];
+
+builder.Services.AddScoped<Supabase.Client>(_ =>
+    new Supabase.Client(
+        SupabaseUrl,
+        SupabaseKey ,
+        new SupabaseOptions
+        {
+            AutoConnectRealtime = true ,
+            
+
+        }));
 
 //================================= -> MIDDLEWARES <- =========================================
 var app = builder.Build();

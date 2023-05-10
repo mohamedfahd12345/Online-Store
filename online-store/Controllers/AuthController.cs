@@ -65,7 +65,7 @@ namespace online_store.Controllers
             
         }
 
-
+        [Authorize("super-admin")]
         [HttpPost, Route("admin/register")]
         public async Task<IActionResult> AdminRegister([FromBody] CustomerDTO customerDTO)
         {

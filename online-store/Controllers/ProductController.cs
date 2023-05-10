@@ -94,7 +94,7 @@ namespace online_store.Controllers
 
         [Authorize(Roles = "vendor")]
         [HttpPut, Route("Products/{productId:int}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute]int productId ,[FromBody] OneProductReadDto updatedProduct)
+        public async Task<IActionResult> UpdateProduct([FromRoute]int productId ,[FromBody] ProductUpdateDto updatedProduct)
         {
             if(updatedProduct.ProductId != productId)
             {

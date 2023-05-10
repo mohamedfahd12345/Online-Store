@@ -208,7 +208,7 @@ namespace online_store.Repositories.PRODUCTS
                 .AnyAsync(x => x.ProductId == productId);
         }
 
-        public async Task<VerifyOfRequest> UpdateProduct(OneProductReadDto updatedProduct, int userId)
+        public async Task<VerifyOfRequest> UpdateProduct(ProductUpdateDto updatedProduct, int userId)
         {
             var VerifyOfRequest = new VerifyOfRequest();
 
@@ -222,17 +222,21 @@ namespace online_store.Repositories.PRODUCTS
                 return VerifyOfRequest;
             }
 
+            var CurrentProduct = await _context.Products
+                .Where(x => x.ProductId == updatedProduct.ProductId)
+                .Include(i=>i.Images)
+                .FirstOrDefaultAsync();
 
+            if (CurrentProduct.VendorId != userId)
+            {
+                VerifyOfRequest.ErrorDetails = "403";
+                VerifyOfRequest.Errorexisting = true;
+                return VerifyOfRequest;
+            }
 
             try
             {
-                var CurrentProduct = await _context.Products.Where(x => x.ProductId == updatedProduct.ProductId).FirstOrDefaultAsync();
-                if (CurrentProduct.VendorId != userId)
-                {
-                    VerifyOfRequest.ErrorDetails = "403";
-                    VerifyOfRequest.Errorexisting = true;
-                    return VerifyOfRequest;
-                }
+               
                 CurrentProduct.Description = updatedProduct.Description;
                 CurrentProduct.CategoryId = updatedProduct.CategoryId;
                 CurrentProduct.MainImageUrl = updatedProduct.MainImageUrl;
@@ -240,20 +244,38 @@ namespace online_store.Repositories.PRODUCTS
                 CurrentProduct.Quantity = updatedProduct.Quantity;
                 CurrentProduct.Price = updatedProduct.Price;
 
+                //await _context.Images.RemoveRange(CurrentProduct.Images);
+                CurrentProduct.Images.Clear();
 
 
 
-                var images = updatedProduct.imagesUrl
-                    .Select(x => new Image
+
+                foreach (var imageDto in updatedProduct.imagesUrl)
+                {
+                    var image = new Image
                     {
-                        Id = x.ImageId,
-                        ImageUrl = x.ImageUrl,
-                        ProductId = x.ProductId
-                    }).ToList();
+                        ProductId = CurrentProduct.ProductId,
+                        ImageUrl = imageDto
+                    };
+
+                    CurrentProduct.Images.Add(image);
+                }
 
                 _context.Products.Update(CurrentProduct);
-                _context.Images.UpdateRange(images);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); 
+
+
+                /*  var images = updatedProduct.imagesUrl
+                      .Select(x => new Image
+                      {
+                          Id = x.ImageId,
+                          ImageUrl = x.ImageUrl,
+                          ProductId = x.ProductId
+                      }).ToList();
+
+                  _context.Products.Update(CurrentProduct);
+                  _context.Images.UpdateRange(images);
+                  await _context.SaveChangesAsync();*/
             }
             catch (Exception ex)
             {
