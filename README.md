@@ -78,6 +78,18 @@ To access the API endpoints, you must obtain a valid JWT token by logging in wit
   - To connect the online store with Redis, modify the relevant configuration file <code>appsettings.json</code> to include the connection details for Redis. 
   <code>"RedisConnectionString" :  "localhost:6379"</code>
 </p>
+
+<h2>Design Patterns and Design Principles</h2>
+<p> - In this project, I have embraced several design patterns to enhance the architecture, maintainability, and extensibility of the codebase. These design patterns provide proven solutions to common software design problems. Here are some of the design patterns utilized: </p>
+<ol>
+  <li><b>Repository Pattern:</b> The Repository pattern separates the data access logic from the business logic of the application. It provides a standardized interface to interact with the underlying data source, allowing for better organization and testability of data-related operations.</li>
+  <li><b>Dependency Injection (DI):</b> The Dependency Injection pattern promotes loose coupling and modular design by externalizing the dependencies of a class. It allows dependencies to be injected from external sources, making it easier to replace or modify dependencies without changing the class implementation. This pattern improves code maintainability, testability, and flexibility.</li>
+</ol>
+<p>- In this project, I adhere to the SOLID principles to encourage better code organization, reduced coupling, and increased flexibility.  </p>
+<p>- In addition to design patterns and SOLID principles, I follow clean code practices to ensure readability, maintainability, and understandability of the codebase. </p>
+
+
+
 <h2>Deployment</h2>
 <h4>Details coming soon</h4>
 <h2>Packages</h2>
