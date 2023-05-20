@@ -10,7 +10,7 @@ using online_store.Helper;
 
 namespace online_store.Controllers
 {
-    [Route("api/")]
+    [Route("api/Authentication")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -24,8 +24,8 @@ namespace online_store.Controllers
             this.authRepository = authRepository;
             this.hashServices = hashServices;
         }
-
-        [HttpPost , Route("customer/register")]
+        
+        [HttpPost("register-as-a-customer")]
         public async Task<IActionResult> Register([FromBody]CustomerDTO customerDTO)
         {
 
@@ -64,9 +64,9 @@ namespace online_store.Controllers
             return Ok(token);
             
         }
-
+        
         [Authorize("super-admin")]
-        [HttpPost, Route("admin/register")]
+        [HttpPost("register-as-an-admin")]
         public async Task<IActionResult> AdminRegister([FromBody] CustomerDTO customerDTO)
         {
 
@@ -79,8 +79,8 @@ namespace online_store.Controllers
 
             return Ok();
         }
-
-        [HttpPost, Route("vendor/register")]
+        
+        [HttpPost("register-as-a-vendor")]
         public async Task<IActionResult> VendorRegister([FromBody] CustomerDTO customerDTO)
         {
 

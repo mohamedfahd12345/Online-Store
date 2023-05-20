@@ -139,7 +139,7 @@ namespace online_store.Authentication_Services
 
             await _context.SaveChangesAsync();
 
-            var tokenOwner =await _context.Users
+            var tokenOwner = await _context.Users
                 .Where(x => x.UserId == targetRefreshToken.UserId)
                 .FirstOrDefaultAsync();
 
