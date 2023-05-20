@@ -15,10 +15,7 @@ namespace online_store.Repositories.PRODUCTS
             this.mapper = mapper;
         }
 
-        /*private async Task RemoveProductsCachingAsync()
-        {
-            await _cacheService.RemoveAsync("Products");
-        }*/
+       
 
         public async Task<List<ProductsReadDto>> GetProductsWithDelegate(Func<Product, bool> condition, string cacheKey)
         {
@@ -93,7 +90,7 @@ namespace online_store.Repositories.PRODUCTS
                 await _context.Images
                     .AddRangeAsync(ImagesUrl);
                 await _context.SaveChangesAsync();
-               
+                await _cacheService.RemoveByAsync("Products");
             }
             catch (Exception ex)
             {
@@ -122,6 +119,7 @@ namespace online_store.Repositories.PRODUCTS
                 }
                 _context.Products.Remove(TargetProduct);
                 await _context.SaveChangesAsync();
+                await _cacheService.RemoveByAsync("Products");
             }
             catch (Exception ex)
             {
@@ -182,6 +180,14 @@ namespace online_store.Repositories.PRODUCTS
             }
 
 
+            string cacheKey = $"Products:{pageNumber}:{productsPerPage}";
+            var productResponse = await _cacheService
+               .GetAsync<List<ProductsReadDto>>(cacheKey);
+
+            if (productResponse is not null)
+            {
+                return productResponse;
+            }
             List<ProductsReadDto> products = await _context.Products
                 .Include(x => x.Category)
                 .AsSplitQuery()
@@ -204,6 +210,7 @@ namespace online_store.Repositories.PRODUCTS
                 .Take(productsPerPage)
                 .ToListAsync();
 
+            await _cacheService.SetAsync<List<ProductsReadDto>>(cacheKey, products);
             return products;
 
         }
@@ -211,14 +218,15 @@ namespace online_store.Repositories.PRODUCTS
         public async Task<List<ProductsReadDto>> GetProductsByCategoryID(int categoryId)
         {
             string CategoryID = categoryId.ToString();
-            return await GetProductsWithDelegate(x => x.CategoryId == categoryId , $"ProductsWithCategoryId{CategoryID}");
+            return await GetProductsWithDelegate(x => x.CategoryId == categoryId, $"Products:category:{categoryId}");
+            
         }
 
         public async Task<List<ProductsReadDto>> GetProductsByName(string name)
         {
 
             var productName = name.Trim().ToLower();
-            return await GetProductsWithDelegate(p => p.ProductName.ToLower().Contains(productName),$"ProductsWithName{productName}" );
+            return await GetProductsWithDelegate(p => p.ProductName.ToLower().Contains(productName),$"Products:search:{productName}" );
 
         }
 
@@ -282,7 +290,8 @@ namespace online_store.Repositories.PRODUCTS
                 }
 
                 _context.Products.Update(CurrentProduct);
-                await _context.SaveChangesAsync(); 
+                await _context.SaveChangesAsync();
+                await _cacheService.RemoveByAsync("Products");
 
 
             }

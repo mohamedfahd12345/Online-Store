@@ -6,11 +6,11 @@ namespace online_store.Repositories.category
     public class CategoryRepository : ICategoryRepository
     {
         private readonly OnlineStoreContext _context;
-        
-        public CategoryRepository(OnlineStoreContext context)
+        private readonly ICacheService _cacheService;
+        public CategoryRepository(OnlineStoreContext context, ICacheService cacheService)
         {
             _context = context;
-            
+            _cacheService = cacheService;
         }
 
         public async Task<VerifyOfRequest> CreateCategory(Category category)
@@ -51,7 +51,7 @@ namespace online_store.Repositories.category
 
                 _context.Categories.Remove(targetCategory);
                 await _context.SaveChangesAsync();
-
+                await _cacheService.RemoveByAsync("Products");
             }
             catch (Exception ex)
             {
@@ -73,6 +73,7 @@ namespace online_store.Repositories.category
             {
                  _context.Categories.Update(category);
                  await _context.SaveChangesAsync();
+                 await _cacheService.RemoveByAsync("Products");
             }
             catch(Exception ex)
             {
