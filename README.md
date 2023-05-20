@@ -55,9 +55,20 @@ To access the API endpoints, you must obtain a valid JWT token by logging in wit
 <p>
   - I utilize Redis to improve performance and handle key-value data efficiently. To improve performance for most used endpoints like endpoints that Get products.
 </p>
-<p>This project uses Redis to store data for the following keys:</p>
+<p>- This project uses Redis to store data for the following keys:</p>
 <ul>
   <li><code>Products:category:{categoryId}</code> This key is used to store products belonging to a specific category with the `categoryId`. For example, `products:category:123` represents the products associated with category 123. Storing products by category enables efficient retrieval and filtering of products based on their categories.</li>
+  <li>
+    <code>products:{page_number}:{page_size}</code> This key stores paginated product data for a given page number and page size. For instance, `products:2:20` represents the products displayed on the second page with 20 products per page. Utilizing this key structure allows us to fetch products in chunks and implement pagination efficiently.
+  </li>
+  <li>
+     <code>products</code> This key represents a general key for storing all products. It is used to cache all products. Storing products in Redis allows for faster retrieval compared to querying a database, leading to improved performance and responsiveness.
+  </li>
+  <li>
+    <code>products:search:{search_query}</code> This key is used for storing products related to a specific search query. For example, `products:search:laptop` represents the products found through a search query for "laptop." This key helps speed up search functionality by storing and retrieving relevant products based on user search queries.
+  </li>
+    
+  
 </ul>
 
 <h2>Deployment</h2>
