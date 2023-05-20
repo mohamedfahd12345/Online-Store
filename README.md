@@ -30,6 +30,22 @@
   <li>Run the application using your IDE Or open the project on your terminal then run this command "dotnet run".</li>
   
 </ol>
+<h2>Authentication and Authorizationy</h2>
+<p dir="auto">
+"The Online-Store Web API uses  JWT (JSON Web Tokens) for authentication and authorization.
+To access the API endpoints, you must obtain a valid JWT token by logging in with valid credentials. When a user logs in, the access token and refresh token are generated and returned to the client. This access token should be included in the Authorization header of subsequent requests. The API provides the following endpoints for authentication:"
+</p>
+<ul> 
+<li>/api/Authentication/register-as-a-customer - Allows users to register for a new account as a customer</li>
+<li>/api/Authentication/register-as-a-vendor- Allows users to register for a new account as a vendor</li>
+<li>/api/Authentication/register-as-an-admin- Admin registration</li>
+<li>/api/Authentication/login - Allows a user to log in to their account and receive a JWT token and refresh token.</li>
+<li>/api/Authentication/refresh-token - Allows a user to refresh token and receive a JWT token and refresh token.</li>
+<li>/api/Authentication/revoke-token - Allows a user to revoke the refresh token.</li>
+</ul>
+<p>
+  The API also includes authorization checks on certain endpoints, ensuring that only authenticated users with the appropriate role can perform certain actions. The available roles are:
+</p>
 
 <h2>Packages</h2>
 <pre class="notranslate" style="position: relative;"><code>  AutoMapper
