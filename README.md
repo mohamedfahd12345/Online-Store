@@ -53,7 +53,10 @@ To access the API endpoints, you must obtain a valid JWT token by logging in wit
 </ul>
 <h2>Redis Usage</h2>
 <p>
-  - I utilize Redis to improve performance and handle key-value data efficiently. To improve performance for most used endpoints like endpoints that Get products.
+  - Redis plays a crucial role in the online store Api by providing efficient data storage and caching capabilities. By leveraging Redis's in-memory nature, we significantly enhance the performance and responsiveness of our application. 
+</p>
+<p>
+  - I utilize Redis to improve performance for most used endpoints like endpoints that Get products.
 </p>
 <p>- This project uses Redis to store data for the following keys:</p>
 <ul>
@@ -71,6 +74,10 @@ To access the API endpoints, you must obtain a valid JWT token by logging in wit
   
 </ul>
 
+<p>
+  - To connect the online store with Redis, modify the relevant configuration file <code>appsettings.json</code> to include the connection details for Redis. 
+  <code>"RedisConnectionString" :  "localhost:6379"</code>
+</p>
 <h2>Deployment</h2>
 <h4>Details coming soon</h4>
 <h2>Packages</h2>
