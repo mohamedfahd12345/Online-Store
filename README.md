@@ -46,7 +46,22 @@ To access the API endpoints, you must obtain a valid JWT token by logging in wit
 <p>
   The API also includes authorization checks on certain endpoints, ensuring that only authenticated users with the appropriate role can perform certain actions. The available roles are:
 </p>
+<ul>
+  <li>Admin: Has full access to all endpoints.</li>
+  <li>vendor : Has access to all products and categories endpoints.</li>
+  <li>customer : Has limited access to only the GET endpoints for products,categories,orders and payment.</li>
+</ul>
+<h2>Redis Usage</h2>
+<p>
+  - I utilize Redis to improve performance and handle key-value data efficiently. To improve performance for most used endpoints like endpoints that Get products.
+</p>
+<p>This project uses Redis to store data for the following keys:</p>
+<ul>
+  <li><code>Products:category:{categoryId}</code> This key is used to store products belonging to a specific category with the `categoryId`. For example, `products:category:123` represents the products associated with category 123. Storing products by category enables efficient retrieval and filtering of products based on their categories.</li>
+</ul>
 
+<h2>Deployment</h2>
+<h4>Details coming soon</h4>
 <h2>Packages</h2>
 <pre class="notranslate" style="position: relative;"><code>  AutoMapper
   AutoMapper.Extensions.Microsoft.DependencyInjection
