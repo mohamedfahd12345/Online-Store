@@ -32,7 +32,8 @@
   <li>Clone the repository to your local machine.</li>
   <li>Open the solution file online-store.sln in your preferred IDE or text editor.</li>
   <li>Update the database connection string in the appsettings.json file with your MS SQL Server connection string.</li>
-  <li>Run the application using your IDE Or open the project on your terminal then run this command "dotnet run".</li>
+  <li> Open the project on your terminal then run those commands <code>dotnet ef migrations add MigrationName</code> then <code>dotnet ef database update</code> </li>
+  <li>Run the application using your IDE Or open the project on your terminal then run this command <code>dotnet run</code></li>
   
 </ol>
 <h2>Authentication and Authorization</h2>
