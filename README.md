@@ -3,15 +3,20 @@
 <p> A RESTful API for an online store that mimics Amazon (website).</p>
 <br/>
 <h2>Technologies used :</h2>
-1. C#  <br>
-2. ASP.NET Web API .NET6.<br>
-3. Redis. <br>
-4. Supabase storage (cloud storage) to upload images. <br>
-5. Swagger UI (Documenting the application).  <br>
-6. Entity Framework Core (Database First Approach). <br>
-7. microsoft sql server  2019.<br>
-8. Docker for running Redis.<br>
-9. Postman.
+<ul>
+  <li>C#</li>
+  <li>ASP.NET Web API .NET6</li>
+  <li>Redis</li>
+  <li>Supabase storage (cloud storage) to upload images</li>
+  <li>Swagger UI (Documenting the application)</li>
+  <li>Entity Framework Core (Database First Approach)</li>
+  <li>microsoft sql server 2019</li>
+  <li>Docker for running Redis</li>
+  <li>Docker to Containerize app.</li>
+  <li>jwt for authentication and authorization.</li>
+  <li>Postman</li>
+</ul>
+
 
 
 <h2>Running the API Locally</h2>
@@ -30,7 +35,7 @@
   <li>Run the application using your IDE Or open the project on your terminal then run this command "dotnet run".</li>
   
 </ol>
-<h2>Authentication and Authorizationy</h2>
+<h2>Authentication and Authorization</h2>
 <p dir="auto">
 "The Online-Store Web API uses  JWT (JSON Web Tokens) for authentication and authorization.
 To access the API endpoints, you must obtain a valid JWT token by logging in with valid credentials. When a user logs in, the access token and refresh token are generated and returned to the client. This access token should be included in the Authorization header of subsequent requests. The API provides the following endpoints for authentication:"
